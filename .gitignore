@@ -1,0 +1,4 @@
+# Virtual environments (any folder, any depth)
+venv*/
+.venv*/
+env/
