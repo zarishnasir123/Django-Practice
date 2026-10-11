@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block title %}
+Python
+{% endblock title %}
+
+{% block content %}
+<h1>Python Page</h1>
+{% bootstrap_alert "Bootstrap is loaded through django-bootstrap5" alert_type="success" %}
+{% bootstrap_button "Start Learning" button_type="button" button_class="btn-primary" %}
+{% bootstrap_button "Django Page" href="/course/dj/" button_class="btn-outline-dark" %}
+{% endblock content%}
+
+{% block footer %}{{block.super}}{% endblock footer %}
