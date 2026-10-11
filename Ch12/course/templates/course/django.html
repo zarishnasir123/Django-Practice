@@ -59,12 +59,47 @@
 
   {% endif %} {% endcomment %}
 
-  <h2>for loop tag</h2>
-  <ul>
+  {% comment %} <h2>for loop tag</h2> {% endcomment %}
+  {% comment %} <ul>
       {% for name in names %}
       <li>{{name}}</li>
       {% endfor %}
-  </ul>
+  </ul> {% endcomment %}
+
+  {% comment %} <ul>
+      {% for name in names reversed %}
+      <li>{{name}}</li>
+      {% endfor %}
+  </ul> {% endcomment %}
+
+  {% comment %} <h3>{{student.stu1}}</h3>
+  <h3>{{student.stu2}}</h3>
+  <h3>{{student.stu3.name}}</h3>
+  <h3>{{student.stu4.roll}}</h3> {% endcomment %}
+  {% for stu in students %}
+    <h2>Name: {{ stu.name }}</h2>
+    <p>Roll No: {{ stu.roll }}</p>
+    <p>Age: {{ stu.age }}</p>
+
+    <h3>Address</h3>
+    <p>City: {{ stu.address.city }}</p>
+    <p>Country: {{ stu.address.country }}</p>
+
+    <p>Marks: {{ stu.marks }}</p>
+
+    <h3>Subjects</h3>
+    {% for subject in stu.subjects %}
+        <p>{{ subject }}</p>
+    {% endfor %}
+
+    <h3>Skills</h3>
+    {% for skill in stu.skills %}
+        <span>{{ skill }} </span>
+    {% endfor %}
+
+    <hr>
+    {% endfor %}
+
 </body>
   </ul>
 </body>
