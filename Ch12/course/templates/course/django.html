@@ -8,14 +8,64 @@
 <body>
     <h1>Learn Django Template Language</h1>
     {% comment %} <h2>Name: {{name}}</h2> {% endcomment %}
-    <h3>Course Details</h3>
+    {% comment %} <h3>Course Details</h3>
     <li>
         <p>Course Name: {{name}}</p>
         <p>Duration: {{duration}}</p>
         <p>Total Seats: {{seats}}</p>
-    </li>
+    </li> {% endcomment %}
 
+    {% comment %} <h2>Filters</h2>
+    <h3>Name: {{name|upper}}</h3>
+    <h3>Description: {{desc|upper|truncatewords:3}}</h3>
+    <h3>{{name|lower}}</h3>
+    <h3>{{name|capfirst}}</h3>
+    <h3>{{name|default:'nothing'}}</h3>
+    <h3>{{name|length}}</h3>
+    <h3>{{name|slice:":2"}}</h3>
+    <h3>{{name|truncatechars:3}}</h3> {% endcomment %}
+    {% comment %} <h3>{{dt}}</h3>
+    <h3>{{dt|date:"Y-m-d"}}</h3>
+    <h3>{{dt|time}}</h3>
+    <h3>{{dt|time:'H:i'}}</h3>
+    <h3>{{dt|date:'SHORT_DATE_FORMAT'}}</h3>
+    <h3>{{dt|time:'TIME_FORMAT'}}</h3>
+ {% endcomment %}
 
-    <p>Django is a high-level Python web framework that helps you build secure and maintainable websites quickly.</p>
+ {% comment %} <h2>Float format</h2>
+ <h3>{{p1}}</h3>
+ <h3>{{p2}}</h3>
+ <h3>{{p3}}</h3>
+
+ <h3>{{p1|floatformat}}</h3>
+ <h3>{{p2|floatformat}}</h3>
+ <h3>{{p3|floatformat}}</h3>
+
+ <h3>{{p1|floatformat:3}}</h3>
+ <h3>{{p2|floatformat:3}}</h3>
+ <h3>{{p3|floatformat:1}}</h3>
+
+ <h3>{{p1|floatformat:0}}</h3>
+ <h3>{{p2|floatformat:0}}</h3>
+ <h3>{{p3|floatformat:0}}</h3>
+
+ <h3>{{p1|floatformat:-3}}</h3>
+ <h3>{{p2|floatformat:-3}}</h3>
+ <h3>{{p3|floatformat:-3}}</h3> {% endcomment %}
+
+ {% comment %} <h2>if tag</h2>
+ {% if nm %}
+ <h3>hello if tag</h3>
+
+  {% endif %} {% endcomment %}
+
+  <h2>for loop tag</h2>
+  <ul>
+      {% for name in names %}
+      <li>{{name}}</li>
+      {% endfor %}
+  </ul>
+</body>
+  </ul>
 </body>
 </html>

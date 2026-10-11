@@ -1,3 +1,29 @@
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}/Ch4/venv/Scripts/python.exe"
+    "python.defaultInterpreterPath": "${workspaceFolder}/Ch4/venv/Scripts/python.exe",
+    "emmet.includeLanguages": {
+        "django-html": "html"
+    },
+    "emmet.triggerExpansionOnTab": true,
+    "auto-close-tag.activationOnLanguage": [
+        "django-html",
+        "xml",
+        "php",
+        "blade",
+        "ejs",
+        "jinja",
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact",
+        "plaintext",
+        "markdown",
+        "vue",
+        "liquid",
+        "erb",
+        "lang-cfml",
+        "cfml",
+        "HTML (EEx)",
+        "HTML (Eex)",
+        "plist"
+    ]
 }
