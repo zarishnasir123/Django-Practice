@@ -4,6 +4,29 @@
         "django-html": "html"
     },
     "emmet.triggerExpansionOnTab": true,
+    "[python]": {
+        "path-autocomplete.pathMappings": {
+            "$root": "${fileDirname}/templates"
+        }
+    },
+    "[django-html]": {
+        "path-autocomplete.pathMappings": {
+            "$root": [
+                "${fileDirname}/..",
+                "${fileDirname}/../../static"
+            ]
+        },
+        "path-autocomplete.excludedItems": {
+            "**/templates/**": {
+                "when": "**/*.html",
+                "context": "\\{%\\s*static"
+            },
+            "**/static/**": {
+                "when": "**/*.html",
+                "context": "\\{%\\s*(extends|include)"
+            }
+        }
+    },
     "auto-close-tag.activationOnLanguage": [
         "django-html",
         "xml",
