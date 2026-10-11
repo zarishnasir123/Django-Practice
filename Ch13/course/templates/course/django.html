@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Static Files CSS JavaScript and Images</title>
+    <link rel="stylesheet" href="{% static 'course/style.css' %}">
+</head>
+<body>
+    <h1>{{nm}} with static file</h1>
+    <img src="{% static 'course/images/banner.svg' %}" alt="Django 5 static files banner" width="320">
+    <p>Static files are the CSS, JavaScript and images that Django serves alongside your templates.</p>
+
+    <h2>Types of static files</h2>
+    <ul>
+        <li>CSS for styling the page</li>
+        <li>JavaScript for making the page interactive</li>
+        <li>Images such as logos and photos</li>
+    </ul>
+
+    <h2>Where they live</h2>
+    <p>Each app keeps its files in a <code>static</code> folder, inside a subfolder named after the app.</p>
+
+    <button id="greet-btn">Click me</button>
+    <p id="message"></p>
+
+    <script src="{% static 'course/js/scripts.js' %}"></script>
+</body>
+</html>
