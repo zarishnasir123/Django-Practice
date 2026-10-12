@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+Python
+{% endblock title %}
+
+{% block content %}
+<h1>Python Page</h1>
+<div class="m-4 rounded-lg border border-green-300 bg-green-100 p-4 text-green-800">Tailwind is loaded through django-tailwind</div>
+<button type="button" class="m-4 rounded bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-700">Start Learning</button>
+<a href="/course/dj/" class="rounded border border-gray-800 px-4 py-2 text-gray-800 hover:bg-gray-800 hover:text-white">Django Page</a>
+{% endblock content%}
+
+{% block footer %}{{block.super}}{% endblock footer %}
