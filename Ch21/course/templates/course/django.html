@@ -1,0 +1,18 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}
+Django
+{% endblock title %}
+
+{% block corecss %}
+{{block.super}}
+<link rel="stylesheet" href="{% static 'course/css/style.css' %}">
+{% endblock corecss %}
+
+{% block content %}
+<h1>Django Page - {{name}}</h1>
+{% include "course/components/topcourse.html" %}
+{% endblock content%}
+
+{% block footer %}{{block.super}} This is django footer{% endblock footer %}

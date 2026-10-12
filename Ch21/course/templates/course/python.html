@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+Python
+{% endblock title %}
+
+{% block content %}
+<h1>Python Page</h1>
+
+{% include "course/components/topcourse.html" with name='Rust' %}
+{% endblock content%}
+
+
+
+{% block footer %}{{block.super}}{% endblock footer %}
