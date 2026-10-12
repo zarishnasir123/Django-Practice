@@ -1,0 +1,27 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+Home
+{% endblock title %}
+
+{% block hero %}
+<section class="bg-linear-to-r from-blue-600 to-indigo-600 px-6 py-16 text-center text-4xl font-bold text-white">
+    Hero section
+</section>
+{% endblock hero %}
+
+{% block content %}
+<h1 class="page-title">Home Page</h1>
+<div class="mt-6 grid gap-6 sm:grid-cols-2">
+    <div class="card">
+        <h2 class="text-xl font-semibold text-green-700">Django</h2>
+        <p class="mt-2 text-slate-600">Django is a Python web framework.</p>
+    </div>
+    <div class="card">
+        <h2 class="text-xl font-semibold text-blue-700">Python</h2>
+        <p class="mt-2 text-slate-600">Python is a programming language.</p>
+    </div>
+</div>
+{% endblock content%}
+
+ {% block footer %}This is Home footer{% endblock footer %}

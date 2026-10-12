@@ -1,0 +1,13 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+Django
+{% endblock title %}
+
+{% block content %}
+<h1 class="page-title">Django Page</h1>
+<p class="card mt-6 text-slate-600">Django is a Python web framework.</p>
+<button type="button" class="btn mt-6">Start Learning</button>
+{% endblock content%}
+
+{% block footer %}{{block.super}} This is django footer{% endblock footer %}

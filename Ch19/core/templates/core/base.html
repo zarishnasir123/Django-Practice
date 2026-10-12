@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'core/css/output.css' %}">
+</head>
+<body class="flex min-h-screen flex-col bg-slate-50 text-slate-800">
+    <nav class="bg-slate-900 text-white">
+        <ul class="mx-auto flex max-w-4xl gap-8 px-6 py-4 font-medium">
+            <li>Home</li>
+            <li>Django</li>
+            <li>Python</li>
+        </ul>
+    </nav>
+
+    {% block hero %}{% endblock hero %}
+    <main class="mx-auto w-full max-w-4xl flex-1 px-6 py-10">
+        {% block content %} {% endblock content%}
+    </main>
+    <footer class="border-t border-slate-200 bg-white py-6 text-center text-sm text-slate-500">
+        {% block footer %}This is footer{% endblock footer %}
+    </footer>
+
+</body>
+</html>
