@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %} {% endblock %}</title>
+    {% block corecss %}<link rel="stylesheet" href="{% static 'core/css/style.css' %}">{% endblock corecss %}
+</head>
+<body>
+    <nav>   
+     <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/about/">About</a></li>
+        <li><a href="/course/dj/">Django</a></li>
+        <li><a href="/course/py/">Python</a></li>
+     </ul>
+    </nav>
+
+    <hr>
+    
+     <nav>   
+     <ul>
+        <li><a href="{% url "home" %}">Home</a></li>
+        <li><a href="{% url "about" %}">About</a></li>
+        <li><a href="{% url "django" %}">Django</a></li>
+        {% url "python" as py %}
+        <li><a href="{{py}}">Python</a></li>
+       
+     </ul>
+    </nav>
+    {% block header %}This is header{% endblock header %}
+    {% block hero %}{% endblock hero %}
+    {% block content %} {% endblock content%}
+    {% block footer %}This is footer{% endblock footer %}
+
+</body>
+</html>
