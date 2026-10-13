@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+
+{% block title %}Home{% endblock title %}
+{% block hero %}
+{% include "core/components/hero.html" %}
+{% endblock hero %}
+
+
+
+{% block maincontent %}
+{% include "core/components/menu.html" %}
+{% include "core/components/about.html" %}
+{% include "core/components/contact.html" %}
+{% endblock maincontent %}

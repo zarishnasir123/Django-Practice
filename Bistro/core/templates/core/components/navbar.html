@@ -1,0 +1,28 @@
+{% load static %}
+<nav class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-3 px-6 py-3 lg:gap-x-8" aria-label="Main">
+    <a href="{% url 'home' %}" class="shrink-0">
+        <img src="{% static 'core/images/logo.png' %}" alt="Bistro Cafe &amp; Restaurant" width="64" height="64" class="size-16 rounded-full">
+    </a>
+
+    <ul class="order-2 flex w-full justify-center gap-6 font-medium text-red-950 md:order-0 md:w-auto lg:gap-8">
+        <li><a href="{% url 'home' %}" class="border-b-2 border-orange-300 pb-1 text-red-700">Home</a></li>
+        <li><a href="#about" class="border-b-2 border-transparent pb-1 transition-colors hover:border-orange-300 hover:text-red-700">About</a></li>
+        <li><a href="#menu" class="border-b-2 border-transparent pb-1 transition-colors hover:border-orange-300 hover:text-red-700">Menu</a></li>
+        <li><a href="#contact" class="border-b-2 border-transparent pb-1 transition-colors hover:border-orange-300 hover:text-red-700">Contact</a></li>
+    </ul>
+
+    <div class="contents md:flex md:flex-1 md:items-center md:justify-end md:gap-3">
+        <form action="{% url 'home' %}" method="get" role="search" class="order-1 flex w-full items-center gap-2 rounded-full border border-red-900/15 px-4 py-2 focus-within:border-red-700 focus-within:ring-2 focus-within:ring-red-700/15 md:order-0 md:w-auto md:max-w-56 md:min-w-28 md:flex-1">
+            <svg class="size-4 shrink-0 text-red-900/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+            <label for="nav-search" class="sr-only">Search the menu</label>
+            <input id="nav-search" type="search" name="q" placeholder="Search menu..." class="w-full min-w-0 bg-transparent text-sm text-red-950 outline-none placeholder:text-red-900/70">
+        </form>
+
+        <a href="#" id="cart-link" aria-label="Cart, 0 items" class="relative ml-auto grid size-11 shrink-0 place-items-center rounded-full border border-red-900/15 text-red-900 transition-colors hover:border-red-700 hover:text-red-700 md:ml-0">
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+            <span id="cart-count" class="absolute -right-1 -top-1 grid size-5 place-items-center rounded-full bg-orange-300 text-xs font-bold text-red-950">0</span>
+        </a>
+
+        <a href="#menu" class="shrink-0 whitespace-nowrap rounded-full bg-red-800 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-red-900">Order Now</a>
+    </div>
+</nav>

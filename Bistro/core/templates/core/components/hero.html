@@ -1,0 +1,28 @@
+{% load static %}
+<section class="overflow-hidden bg-neutral-50">
+    <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-12 px-6 py-12 lg:grid-cols-2 lg:py-16">
+        <div>
+            <h1 class="text-5xl font-extrabold leading-[1.1] text-neutral-900 sm:text-6xl lg:text-7xl" data-aos="fade-right">
+                <span class="block text-7xl text-red-700 sm:text-8xl lg:text-[6.5rem]">EAT</span>
+                HEALTHY<br>
+                BE HEALTHY
+            </h1>
+            <p class="mt-8 max-w-xs font-light leading-7 text-neutral-600" data-aos="fade-right" data-aos-delay="150">Fresh ingredients, grilled to order and served hot. Good food that is good for you.</p>
+            <div class="mt-10" data-aos="fade-right" data-aos-delay="300">
+                <a href="#menu" class="group inline-flex items-center gap-5 rounded-xl bg-red-800 px-7 py-3.5 text-xl font-medium text-white shadow-lg shadow-red-800/30 transition hover:bg-red-900 hover:shadow-xl active:scale-95">
+                    Check Menu
+                    <svg class="h-6 w-10 transition-transform duration-300 group-hover:translate-x-1.5" viewBox="0 0 40 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h36m-7-7 7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="mx-auto w-full max-w-xl" data-aos="zoom-in" data-aos-duration="1000">
+            <div class="relative animate-float">
+                <img src="{% static 'core/images/hero-plate.png' %}" alt="Grilled steak with rocket, lemon and cherry tomatoes on a white plate" width="672" height="672" class="w-full drop-shadow-2xl">
+                <img src="{% static 'core/images/leaf-pair.png' %}" alt="" width="538" height="545" class="absolute -top-10 -right-4 w-20 rotate-30 animate-sway drop-shadow-lg sm:w-28">
+                <img src="{% static 'core/images/leaf-pair.png' %}" alt="" width="538" height="545" class="absolute -bottom-10 -left-6 w-20 -rotate-140 animate-sway drop-shadow-lg [animation-delay:-2s] [animation-duration:6s] sm:w-28 lg:-bottom-12">
+                <img src="{% static 'core/images/leaf-pair.png' %}" alt="" width="538" height="545" class="absolute -right-8 -bottom-8 w-20 -scale-x-100 -rotate-30 animate-sway drop-shadow-lg [animation-delay:-3.5s] [animation-duration:7s] sm:w-28 lg:-right-12 lg:-bottom-12">
+            </div>
+        </div>
+    </div>
+</section>

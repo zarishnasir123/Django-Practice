@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock title %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="{% static 'core/css/aos.css' %}">
+    <link rel="stylesheet" href="{% static 'core/css/main.css' %}">
+    <noscript><style>[data-aos] { opacity: 1 !important; transform: none !important; }</style></noscript>
+</head>
+<body>
+    <header class="sticky top-0 z-50 border-b border-red-900/10 bg-white transition-shadow duration-300 data-[scrolled=true]:shadow-md">
+        {% block navbar %}
+        {% include "core/components/navbar.html" %}
+        {% endblock navbar %}
+    </header>
+    {% block hero %}{% endblock hero %}
+    {% block maincontent %}{% endblock maincontent %}
+    <footer class="overflow-clip bg-red-950 text-white">
+        {% block footer %}
+        {% include "core/components/footer.html" %}
+        {% endblock footer %}
+    </footer>
+
+    <p id="toast" role="status" data-visible="false" class="pointer-events-none fixed bottom-6 left-1/2 z-50 w-max max-w-[calc(100vw-3rem)] -translate-x-1/2 translate-y-4 rounded-3xl bg-neutral-900 px-5 py-3 text-center text-sm font-medium text-white opacity-0 shadow-lg transition duration-300 data-[visible=true]:translate-y-0 data-[visible=true]:opacity-100"></p>
+
+    <script src="{% static 'core/js/aos.js' %}"></script>
+    <script src="{% static 'core/js/gsap.min.js' %}"></script>
+    <script src="{% static 'core/js/ScrollTrigger.min.js' %}"></script>
+    <script src="{% static 'core/js/main.js' %}"></script>
+</body>
+</html>

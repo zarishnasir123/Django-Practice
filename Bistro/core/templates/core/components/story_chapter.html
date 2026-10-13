@@ -1,0 +1,18 @@
+{% load static %}
+<li data-chapter data-active="false" class="group/chapter relative grid grid-cols-1 items-center gap-8 pl-10 lg:grid-cols-2 lg:gap-28 lg:pl-0">
+    <span data-dot class="absolute left-3 top-8 size-4 -translate-x-1/2 rounded-full border-2 border-neutral-300 bg-white transition duration-300 group-data-[active=true]/chapter:scale-125 group-data-[active=true]/chapter:border-red-700 group-data-[active=true]/chapter:bg-red-700 lg:left-1/2 lg:top-1/2 lg:-translate-y-1/2" aria-hidden="true"></span>
+
+    <div class="relative {% if flip %} lg:order-2 {% endif %}" data-aos="{% if flip %}fade-left{% else %}fade-right{% endif %}">
+        <div data-drift="24" class="absolute -bottom-5 h-2/3 w-2/3 rounded-[2.5rem] bg-red-50 {% if flip %} -right-5 {% else %} -left-5 {% endif %}" aria-hidden="true"></div>
+        <div class="relative aspect-3/2 overflow-hidden rounded-[2.5rem] shadow-xl shadow-neutral-300/60">
+            <img data-parallax src="{% static image %}" alt="{{ alt }}" loading="lazy" class="absolute inset-x-0 -top-[15%] h-[130%] w-full object-cover">
+        </div>
+    </div>
+
+    <div class="relative isolate max-w-md {% if flip %} lg:ml-auto {% endif %}" data-aos="{% if flip %}fade-right{% else %}fade-left{% endif %}">
+        <p data-drift="-40" class="pointer-events-none absolute -top-20 right-0 -z-10 hidden select-none text-[9rem] font-extrabold leading-none text-red-700/10 lg:block" aria-hidden="true">{{ number }}</p>
+        <p class="text-sm font-semibold uppercase tracking-[0.2em] text-red-700">Chapter {{ number }}</p>
+        <h3 class="mt-3 text-3xl font-bold text-neutral-900">{{ title }}</h3>
+        <p class="mt-4 font-light leading-7 text-neutral-600">{{ text }}</p>
+    </div>
+</li>

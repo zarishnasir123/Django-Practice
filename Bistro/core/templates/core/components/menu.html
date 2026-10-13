@@ -1,0 +1,16 @@
+<section id="menu" class="scroll-mt-44 bg-neutral-50 px-6 py-16 md:scroll-mt-24 lg:py-20">
+    <h2 class="text-center text-4xl font-bold text-neutral-900" data-aos="fade-up">Our Special Dish</h2>
+    <div class="mx-auto mt-32 grid max-w-4xl grid-cols-1 gap-x-4 gap-y-28 md:grid-cols-3 lg:gap-x-12">
+        {% include "core/components/dish_card.html" with name="Grilled Salmon" text="With herbs and fresh greens" price="2,450" image="core/images/dish-salmon.png" delay="0" %}
+        {% include "core/components/dish_card.html" with name="Seared Scallops" text="With citrus and microgreens" price="2,950" image="core/images/dish-scallops.png" delay="150" %}
+        {% include "core/components/dish_card.html" with name="Seafood Platter" text="Chef's pick with pepper sauce" price="3,650" image="core/images/dish-seafood.png" delay="300" %}
+    </div>
+
+    <h2 class="mt-24 text-center text-4xl font-bold text-neutral-900" data-aos="fade-up">Our Sweet Dish</h2>
+    <div class="mx-auto mt-32 grid max-w-2xl grid-cols-1 gap-x-6 gap-y-28 sm:grid-cols-2 xl:max-w-6xl xl:grid-cols-4">
+        {% include "core/components/dish_card.html" with name="Chocolate Plate" text="Ice cream, caramel and fudge" price="850" image="core/images/sweet-chocolate.png" delay="0" %}
+        {% include "core/components/dish_card.html" with name="Brownie Sundae" text="Warm brownie, vanilla scoop" price="650" image="core/images/sweet-brownie.png" delay="150" %}
+        {% include "core/components/dish_card.html" with name="Lava Cake" text="Molten centre with ice cream" price="750" image="core/images/sweet-lava-cake.png" delay="300" %}
+        {% include "core/components/dish_card.html" with name="Banana Split" text="Three scoops, nuts and sauce" price="550" image="core/images/sweet-banana-split.png" delay="450" %}
+    </div>
+</section>

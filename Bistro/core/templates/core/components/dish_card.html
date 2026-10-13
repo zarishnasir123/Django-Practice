@@ -1,0 +1,20 @@
+{% load static %}
+<article data-dish="{{ name }}" data-aos="fade-up" data-aos-delay="{{ delay|default:0 }}" class="mx-auto w-full max-w-xs">
+    <div class="group/card relative rounded-[2.5rem] bg-white px-6 pb-6 pt-36 shadow-xl shadow-neutral-200/80 transition duration-300 hover:-translate-y-2 hover:shadow-2xl">
+        <img src="{% static image %}" alt="{{ name }}" width="480" height="480" loading="lazy" class="absolute -top-20 left-1/2 size-52 -translate-x-1/2 object-contain drop-shadow-xl transition duration-500 group-hover/card:scale-105 group-hover/card:rotate-6">
+        <div class="flex items-center justify-between gap-3">
+            <h3 class="text-base font-bold text-neutral-900 lg:text-lg">{{ name }}</h3>
+            <button type="button" data-action="favourite" aria-pressed="false" aria-label="Add {{ name }} to favourites" class="group/btn grid size-9 shrink-0 place-items-center rounded-full bg-neutral-100 text-neutral-900 transition hover:scale-110 hover:text-red-700 active:scale-95 aria-pressed:bg-red-50 aria-pressed:text-red-700">
+                <svg class="size-5 group-aria-pressed/btn:fill-current" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"/></svg>
+            </button>
+        </div>
+        <p class="mt-1 text-xs font-light text-neutral-500">{{ text }}</p>
+        <div class="mt-3 flex items-center justify-between">
+            <p class="font-semibold text-neutral-900">Rs {{ price }}</p>
+            <button type="button" data-action="cart" aria-pressed="false" aria-label="Add {{ name }} to cart" class="group/btn grid size-9 place-items-center rounded-full bg-red-800 text-white transition hover:scale-110 hover:bg-red-900 active:scale-95 aria-pressed:bg-green-600 aria-pressed:hover:bg-green-700">
+                <svg class="size-5 group-aria-pressed/btn:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                <svg class="hidden size-5 group-aria-pressed/btn:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4.5 12.75 6 6 9-13.5"/></svg>
+            </button>
+        </div>
+    </div>
+</article>
