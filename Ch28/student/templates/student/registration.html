@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration</title>
+  </head>
+  <body>
+    <h1>Student registration</h1>
+    {% comment %} <form action="">
+      First Name: {{form.first_name}}  <br>
+      Last Name: {{form.last_name}}
+
+    </form> {% endcomment %}
+
+    {% comment %} Form label {% endcomment %}
+
+     {% comment %} <form action="">
+      {{form.first_name.label_tag}} {{form.first_name}}  <br>
+      {{form.last_name.label_tag}} {{form.last_name}}
+
+    </form> {% endcomment %}
+{% comment %} 
+    <form action="">
+      <label for="{{form.first_name.id_for_label}}">First Name</label> {{form.first_name}} <br>
+      <label for="{{form.last_name.id_for_label}}">Last Name</label> {{form.last_name}}
+
+    </form> {% endcomment %}
+
+    {% comment %} <form action="">
+      <label for="{{form.first_name.id_for_label}}">{{form.first_name.label}}</label> {{form.first_name}} <br>
+      <label for="{{form.last_name.id_for_label}}">{{form.last_name.label}}</label> {{form.last_name}}
+
+    </form> {% endcomment %}
+
+    <form action="">
+      <label for="{{form.first_name.id_for_label}}">First Name: </label>
+
+      {{form.first_name}}
+      <input type="text" name="first_name" required
+      id="id_first_name">
+
+
+
+      <label for="{{form.last_name.id_for_label}}">Last Name: </label>
+
+      {{form.last_name}}
+
+    </form>
+
+    {% comment %} Field value and placeholder {% endcomment %}
+
+    {% comment %} <form action="">
+      <label for="{{form.first_name.id_for_label}}">{{form.first_name.label}}</label>
+      <input type="text" name="{{form.first_name.html_name}}" id="{{form.first_name.auto_id}}"
+        value="{{form.first_name.value|default_if_none:''}}" placeholder="{{form.first_name.label}}" required> <br>
+
+      <label for="{{form.email.id_for_label}}">{{form.email.label}}</label>
+      <input type="email" name="{{form.email.html_name}}" id="{{form.email.auto_id}}"
+        value="{{form.email.value|default_if_none:''}}" placeholder="{{form.email.label}}" required>
+
+    </form> {% endcomment %}
+
+    {% comment %} Loop over all fields {% endcomment %}
+
+    {% comment %} <form action="">
+      {% for field in form %}
+        <div class="form-field">
+          {{field.label_tag}} {{field}} {{field.errors}}
+        </div>
+      {% endfor %}
+
+    </form> {% endcomment %}
+
+    {% comment %} Loop over visible and hidden fields separately {% endcomment %}
+
+    {% comment %} <form action="">
+      {% for field in form.hidden_fields %}
+        {{field}}
+      {% endfor %}
+
+      {% for field in form.visible_fields %}
+        {{field.label_tag}} {{field}} <br>
+      {% endfor %}
+
+    </form> {% endcomment %}
+
+  </body>
+</html>
