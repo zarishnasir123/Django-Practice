@@ -1,0 +1,50 @@
+<style>
+    /* error text next to each field */
+    form div span {
+        color: red;
+    }
+
+    /* red border on inputs that have an error */
+    input[aria-invalid="true"] {
+        border: 1px solid red;
+    }
+
+    /* box for errors that belong to the whole form */
+    .nonfield {
+        border: 1px solid red;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    /* label of a field that has an error (error_css_class in forms.py) */
+    .error label {
+        color: red;
+    }
+</style>
+
+<h2>Student Registration</h2>
+
+<form method="POST" novalidate>
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+    <div class="nonfield">
+        {% for error in form.non_field_errors %}
+            <span>{{error}}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% for field in form %}
+
+    <div class="{{field.css_classes}}">
+        {{field.label_tag}}  {{field}}
+        {% for error in field.errors %}
+            <span>{{error}}</span>
+        {% endfor %}
+    </div>
+    
+    {% endfor %}
+
+    <button type="submit">Submit</button>
+</form>
