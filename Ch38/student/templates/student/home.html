@@ -1,0 +1,62 @@
+{% extends 'student/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">Student Home</h1>
+
+  <div class="row">
+    <!-- left column: profile form -->
+    <div class="col-sm-8">
+      <h3>Profile Form</h3>
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+
+        {% for field in form %}
+        <div class="mb-3">
+          <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+
+          {% if field.widget_type == 'radioselect' %}
+          <!-- radio buttons need bootstrap's form-check wrapper, one per choice -->
+          <div>
+            {% for radio in field %}
+            <div class="form-check form-check-inline">
+              {{ radio.tag }}
+              <label class="form-check-label" for="{{ radio.id_for_label }}">{{ radio.choice_label }}</label>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          {{ field }}
+          {% endif %}
+
+          {% if field.help_text %}
+          <div class="form-text">{{ field.help_text }}</div>
+          {% endif %}
+
+          {% for error in field.errors %}
+          <div class="text-danger small">{{ error }}</div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+    <!-- right column: list of candidates -->
+    <div class="col-sm-4">
+      <h3>List of Candidates</h3>
+
+      <ul class="list-group">
+        {% for candidate in candidates %}
+        <li class="list-group-item">{{ candidate.name }} <span class="text-muted">({{ candidate.city }})</span></li>
+        {% empty %}
+        <li class="list-group-item">No candidates yet.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock content %}
