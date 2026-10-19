@@ -9,9 +9,13 @@
     <div class="col-sm-8">
       <h3>Profile Form</h3>
 
-      <form method="POST" enctype="multipart/form-data">
+      <!-- novalidate: skip the browser's popups so Django's red errors always show -->
+      <form method="POST" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
-        {{ form.non_field_errors }}
+
+        {% for error in form.non_field_errors %}
+        <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
 
         {% for field in form %}
         <div class="mb-3">
@@ -38,6 +42,11 @@
           {% for error in field.errors %}
           <div class="text-danger small">{{ error }}</div>
           {% endfor %}
+
+          <!-- browsers empty file inputs after a failed submit, so ask for the file again -->
+          {% if form.errors and field.name in form.files %}
+          <div class="small text-warning-emphasis">Your file was not kept because the form had errors. Please choose it again.</div>
+          {% endif %}
         </div>
         {% endfor %}
 
@@ -49,13 +58,22 @@
     <div class="col-sm-4">
       <h3>List of Candidates</h3>
 
-      <ul class="list-group">
+      <div class="list-group">
         {% for candidate in candidates %}
-        <li class="list-group-item">{{ candidate.name }} <span class="text-muted">({{ candidate.city }})</span></li>
+        <!-- each candidate links to their own page, e.g. /candidate/3/ -->
+        <a href="{% url 'candidate' candidate.id %}" class="list-group-item list-group-item-action d-flex align-items-center">
+          {% if candidate.profile_image %}
+          <img src="{{ candidate.profile_image.url }}" alt="{{ candidate.name }}" width="50" height="50" class="rounded-circle object-fit-cover me-3">
+          {% else %}
+          <!-- no image uploaded: grey circle with the first letter of the name -->
+          <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-3" style="width: 50px; height: 50px;">{{ candidate.name|first|upper }}</div>
+          {% endif %}
+          <div>{{ candidate.name }} <span class="text-muted">({{ candidate.city }})</span></div>
+        </a>
         {% empty %}
-        <li class="list-group-item">No candidates yet.</li>
+        <div class="list-group-item">No candidates yet.</div>
         {% endfor %}
-      </ul>
+      </div>
     </div>
   </div>
 </div>

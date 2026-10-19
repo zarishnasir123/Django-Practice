@@ -1,0 +1,54 @@
+{% extends 'student/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <div class="card">
+
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Candidate Details</h4>
+          <!-- X button: back to the list -->
+          <a href="{% url 'home' %}" class="btn-close" aria-label="Close"></a>
+        </div>
+
+        <div class="card-body">
+          <div class="text-center mb-4">
+            {% if candidate.profile_image %}
+            <img src="{{ candidate.profile_image.url }}" alt="{{ candidate.name }}" width="120" height="120" class="rounded-circle object-fit-cover">
+            {% else %}
+            <div class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center fs-1" style="width: 120px; height: 120px;">{{ candidate.name|first|upper }}</div>
+            {% endif %}
+            <h3 class="mt-3">{{ candidate.name }}</h3>
+          </div>
+
+          <table class="table">
+            <tr><th>Date of Birth</th><td>{{ candidate.dob|date:"d M Y" }}</td></tr>
+            <tr><th>Gender</th><td>{{ candidate.gender }}</td></tr>
+            <tr><th>Locality</th><td>{{ candidate.locality }}</td></tr>
+            <tr><th>City</th><td>{{ candidate.city }}</td></tr>
+            <tr><th>Pin Code</th><td>{{ candidate.pincode }}</td></tr>
+            <tr><th>State</th><td>{{ candidate.state }}</td></tr>
+            <tr><th>Mobile</th><td>{{ candidate.mobile }}</td></tr>
+            <tr><th>Email</th><td>{{ candidate.email }}</td></tr>
+            <tr><th>Job City</th><td>{{ candidate.job_city }}</td></tr>
+            <tr>
+              <th>Document</th>
+              <td>
+                {% if candidate.my_file %}
+                <a href="{{ candidate.my_file.url }}" target="_blank" rel="noopener">View document</a>
+                {% else %}
+                <span class="text-muted">Not uploaded</span>
+                {% endif %}
+              </td>
+            </tr>
+          </table>
+
+          <a href="{% url 'home' %}" class="btn btn-secondary">Close</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

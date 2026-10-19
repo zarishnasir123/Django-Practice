@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from .forms import ProfileForm
 from .models import Profile
@@ -22,4 +22,14 @@ def home(request):
     return render(request, 'student/home.html', {
         'form': form,
         'candidates': candidates
+    })
+
+
+#one candidate's details; pk comes from the url
+def candidate(request, pk):
+    #shows a "Page not found" (404) instead of crashing when the id doesn't exist
+    candidate = get_object_or_404(Profile, pk=pk)
+
+    return render(request, 'student/candidate.html', {
+        'candidate': candidate
     })
