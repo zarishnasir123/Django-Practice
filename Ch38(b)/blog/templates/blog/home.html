@@ -1,0 +1,75 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog</title>
+    <!-- Tailwind CSS, built from z_dev/input.css -->
+    <link rel="stylesheet" href="{% static 'blog/css/main.css' %}">
+    <!-- loads CKEditor's JavaScript and CSS; without it the editor doesn't appear -->
+    {{ form.media }}
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-800 antialiased">
+
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto max-w-3xl px-4 py-5">
+        <a href="{% url 'home' %}" class="text-2xl font-bold tracking-tight text-slate-900">Blog</a>
+        <p class="text-sm text-slate-500">Write posts with the CKEditor 5 rich text editor</p>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-3xl space-y-10 px-4 py-10">
+
+      <!-- new post form -->
+      <section class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+        <h2 class="text-xl font-semibold text-slate-900">New Post</h2>
+
+        <!-- novalidate: CKEditor hides the real textarea, so the browser's own "required" check would block the submit -->
+        <form method="POST" novalidate class="mt-6 space-y-6">
+          {% csrf_token %}
+
+          <div>
+            <label for="{{ form.title.id_for_label }}" class="text-sm font-medium text-slate-700">Title</label>
+            {{ form.title }}
+            {% for error in form.title.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+            {% endfor %}
+          </div>
+
+          <div>
+            <label for="{{ form.content.id_for_label }}" class="mb-2 block text-sm font-medium text-slate-700">Content</label>
+            {{ form.content }}
+            {% for error in form.content.errors %}
+            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+            {% endfor %}
+          </div>
+
+          <button type="submit" class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            Publish
+          </button>
+        </form>
+      </section>
+
+      <!-- saved posts -->
+      <section>
+        <h2 class="text-xl font-semibold text-slate-900">Posts</h2>
+
+        <div class="mt-4 space-y-6">
+          {% for post in posts %}
+          <article class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
+            <h3 class="text-2xl font-bold text-slate-900">{{ post.title }}</h3>
+            <!-- safe: show the editor's HTML as formatting; prose: Tailwind typography styles for that HTML -->
+            <div class="prose prose-slate mt-4 max-w-none">
+              {{ post.content|safe }}
+            </div>
+          </article>
+          {% empty %}
+          <p class="rounded-2xl border border-dashed border-slate-300 p-6 text-center text-slate-500">No posts yet. Write the first one above.</p>
+          {% endfor %}
+        </div>
+      </section>
+
+    </main>
+  </body>
+</html>

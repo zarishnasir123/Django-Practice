@@ -1,5 +1,5 @@
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}/Ch4/venv/Scripts/python.exe",
+    "python.defaultInterpreterPath": "${workspaceFolder}/Ch38(b)/venv/Scripts/python.exe",
     "emmet.includeLanguages": {
         "django-html": "html"
     },
