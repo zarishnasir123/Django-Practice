@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student</title>
+  </head>
+  <body>
+    <h1>Student List</h1>
+    <ul>
+      <li><a href="{% url "profile" 1 %}">Student1</a></li>
+      <li><a href="{% url "profile" 2 %}">Student2</a></li>
+      <li><a href="{% url "profile" 3 %}">Student3</a></li>
+      <li><a href="{% url "profile" 4 %}">Student4</a></li>
+    </ul>
+
+    <h2>More dynamic URL examples</h2>
+    <ul>
+      <li><a href="{% url "student_subject" 3 2 %}">Student 3, Subject 2</a> (two int values)</li>
+      <li><a href="{% url "subject" "computer-science" %}">Computer Science</a> (slug)</li>
+      <li><a href="{% url "student_name" "zarish" %}">Zarish</a> (str)</li>
+      <li><a href="{% url "result" "2026-cs-014" %}">Result 2026-CS-014</a> (custom roll converter)</li>
+    </ul>
+  </body>
+</html>
