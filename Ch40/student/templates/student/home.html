@@ -1,0 +1,68 @@
+{% extends 'student/base.html' %}
+{# the messages are shown by base.html, above this content #}
+
+{% block content %}
+<h1 class="mb-4">Student Home</h1>
+
+<div class="row g-4">
+
+  {# ===== left: register form (success / error messages) ===== #}
+  <div class="col-md-7">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-3">Register</h4>
+
+        {# novalidate: let Django check the fields, so the error message example can be seen #}
+        <form method="POST" novalidate>
+          {% csrf_token %}
+
+          {% for field in form %}
+          <div class="mb-3">
+            <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+            {{ field }}
+            {% for error in field.errors %}
+            <div class="text-danger small">{{ error }}</div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+
+          <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  {# ===== right: students list (warning message on delete) + all levels button ===== #}
+  <div class="col-md-5">
+    <div class="card">
+      <div class="card-body">
+        <h4 class="card-title mb-3">Students</h4>
+
+        <ul class="list-group list-group-flush">
+          {% for student in students %}
+          <li class="list-group-item d-flex justify-content-between align-items-center">
+            <span>{{ student.name }} <small class="text-body-secondary">{{ student.email }}</small></span>
+            {# delete with a small POST form, not a link #}
+            <form method="POST" action="{% url 'delete' student.id %}">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+            </form>
+          </li>
+          {% empty %}
+          <li class="list-group-item text-body-secondary">No students yet.</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-body">
+        <h5 class="card-title">Every message level</h5>
+        <p class="card-text small text-body-secondary">Adds a debug, info, success, warning and error message, then comes back here.</p>
+        <a href="{% url 'levels' %}" class="btn btn-outline-secondary">Show all levels</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock content %}
