@@ -1,0 +1,48 @@
+{% extends 'book/base.html' %}
+
+{% block title %}Books | BookReview{% endblock title %}
+
+{% block content %}
+<section class="mb-10 flex flex-wrap items-end justify-between gap-4">
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">Discover and review books</h1>
+    <p class="mt-2 text-stone-600">See what readers think, and share your own rating.</p>
+  </div>
+
+  {# CREATE button, staff only #}
+  {% if user.is_staff %}
+  <a href="{% url 'add_book' %}" class="rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-500">+ Add book</a>
+  {% endif %}
+</section>
+
+{# ===== book cards ===== #}
+<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+  {% for book in books %}
+  {# get_absolute_url() from models.py gives /book/<id>/ #}
+  <a href="{{ book.get_absolute_url }}" class="group flex flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200 transition hover:shadow-md hover:ring-amber-300">
+    <span class="w-fit rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-200">
+      {{ book.get_genre_display }}
+    </span>
+    <h2 class="mt-3 text-lg font-semibold text-stone-900 group-hover:text-amber-700">{{ book.title }}</h2>
+    <p class="text-sm text-stone-500">by {{ book.author }}</p>
+
+    {# average_rating() from models.py; None when there are no reviews #}
+    {% with avg=book.average_rating %}
+    <p class="mt-auto pt-4 text-sm text-stone-600">
+      {% if avg %}
+      <span class="font-semibold text-amber-600">&#9733; {{ avg|floatformat:1 }}</span> / 5
+      <span class="text-stone-400">({{ book.reviews.count }} review{{ book.reviews.count|pluralize }})</span>
+      {% else %}
+      <span class="text-stone-400">No reviews yet</span>
+      {% endif %}
+    </p>
+    {% endwith %}
+  </a>
+  {% empty %}
+  <div class="rounded-2xl border border-dashed border-stone-300 p-10 text-center text-stone-500 sm:col-span-2 lg:col-span-3">
+    No books yet.
+    {% if user.is_staff %}<a href="{% url 'add_book' %}" class="font-medium text-amber-700 underline">Add the first one</a>.{% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock content %}

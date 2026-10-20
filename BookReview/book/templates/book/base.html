@@ -1,0 +1,71 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {# each page can set its own title; "BookReview" when it doesn't #}
+    <title>{% block title %}BookReview{% endblock title %}</title>
+    {# Tailwind CSS, built from z_dev/input.css #}
+    <link rel="stylesheet" href="{% static 'book/css/main.css' %}">
+  </head>
+  <body class="flex min-h-screen flex-col bg-stone-50 text-stone-800 antialiased">
+
+    {# ===== header ===== #}
+    <header class="border-b border-stone-200 bg-white">
+      <div class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+        <a href="{% url 'home' %}" class="text-xl font-bold tracking-tight text-stone-900">
+          Book<span class="text-amber-600">Review</span>
+        </a>
+        <nav class="flex items-center gap-6 text-sm font-medium text-stone-600">
+          <a href="{% url 'home' %}" class="hover:text-stone-900">Books</a>
+
+          {# "user" is in every template (auth context processor) #}
+          {% if user.is_staff %}
+          <a href="{% url 'admin:index' %}" class="hover:text-stone-900">Admin</a>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          <span class="text-stone-400">Hi, {{ user.username }}</span>
+          {# logging out has to be a POST (a small form) in Django 5 and later #}
+          <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="font-medium hover:text-stone-900">Log out</button>
+          </form>
+          {% else %}
+          <a href="{% url 'login' %}" class="hover:text-stone-900">Log in</a>
+          {% endif %}
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
+
+      {# ===== messages (Ch40): coloured by level ===== #}
+      {% if messages %}
+      <div class="mb-8 space-y-3">
+        {% for message in messages %}
+        <div role="alert" class="rounded-xl border px-4 py-3 text-sm
+          {% if message.level_tag == 'success' %}border-green-200 bg-green-50 text-green-800
+          {% elif message.level_tag == 'error' %}border-red-200 bg-red-50 text-red-800
+          {% elif message.level_tag == 'warning' %}border-amber-200 bg-amber-50 text-amber-800
+          {% else %}border-stone-200 bg-white text-stone-700{% endif %}">
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {# ===== page content from home.html, book_detail.html ... ===== #}
+      {% block content %}{% endblock content %}
+    </main>
+
+    {# ===== footer ===== #}
+    <footer class="border-t border-stone-200 bg-white">
+      <div class="mx-auto max-w-5xl px-4 py-6 text-sm text-stone-500">
+        BookReview, a Django practice project
+      </div>
+    </footer>
+
+  </body>
+</html>

@@ -1,0 +1,37 @@
+{% extends 'book/base.html' %}
+{# Django's built-in LoginView looks for registration/login.html #}
+
+{% block title %}Log in | BookReview{% endblock title %}
+
+{% block content %}
+<div class="mx-auto max-w-sm rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200 sm:p-8">
+  <h1 class="text-2xl font-bold tracking-tight text-stone-900">Log in</h1>
+  <p class="mt-1 text-sm text-stone-500">Log in to write reviews.</p>
+
+  <form method="post" action="{% url 'login' %}" class="mt-6 space-y-5">
+    {% csrf_token %}
+
+    {# wrong username or password #}
+    {% for error in form.non_field_errors %}
+    <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{{ error }}</div>
+    {% endfor %}
+
+    {# written by hand (Ch28) so they can use the Tailwind "field" style #}
+    <div>
+      <label for="id_username" class="text-sm font-medium text-stone-700">Username</label>
+      <input type="text" name="username" id="id_username" value="{{ form.username.value|default_if_none:'' }}" class="field" autocomplete="username" autofocus required>
+    </div>
+    <div>
+      <label for="id_password" class="text-sm font-medium text-stone-700">Password</label>
+      <input type="password" name="password" id="id_password" class="field" autocomplete="current-password" required>
+    </div>
+
+    {# where to go after logging in, e.g. back to the review form #}
+    <input type="hidden" name="next" value="{{ next }}">
+
+    <button type="submit" class="w-full rounded-xl bg-amber-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-600">
+      Log in
+    </button>
+  </form>
+</div>
+{% endblock content %}

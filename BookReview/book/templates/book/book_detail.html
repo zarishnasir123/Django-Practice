@@ -1,0 +1,77 @@
+{% extends 'book/base.html' %}
+
+{% block title %}{{ book.title }} | BookReview{% endblock title %}
+
+{% block content %}
+<a href="{% url 'home' %}" class="text-sm font-medium text-stone-500 hover:text-stone-900">&larr; All books</a>
+
+{# ===== book info ===== #}
+<article class="mt-4 rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200 sm:p-8">
+  <span class="rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-amber-200">
+    {{ book.get_genre_display }}
+  </span>
+  <h1 class="mt-3 text-3xl font-bold tracking-tight text-stone-900">{{ book.title }}</h1>
+  <p class="mt-1 text-stone-600">
+    by {{ book.author }}{% if book.published_year %} &middot; {{ book.published_year }}{% endif %}
+  </p>
+
+  {# average_rating() from models.py; floatformat:1 shows one decimal, e.g. 4.5 #}
+  {% with avg=book.average_rating %}
+  <p class="mt-4 text-lg">
+    {% if avg %}
+    <span class="font-semibold text-amber-600">&#9733; {{ avg|floatformat:1 }}</span>
+    <span class="text-stone-500">/ 5 from {{ book.reviews.count }} review{{ book.reviews.count|pluralize }}</span>
+    {% else %}
+    <span class="text-stone-400">No ratings yet</span>
+    {% endif %}
+  </p>
+  {% endwith %}
+
+  {% if book.description %}
+  <p class="mt-6 leading-relaxed text-stone-700">{{ book.description|linebreaksbr }}</p>
+  {% endif %}
+
+  {# UPDATE and DELETE buttons, staff only #}
+  {% if user.is_staff %}
+  <div class="mt-6 flex gap-3 border-t border-stone-100 pt-6">
+    <a href="{% url 'edit_book' book.pk %}" class="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-stone-700 ring-1 ring-stone-300 transition hover:bg-stone-50">Edit</a>
+    <a href="{% url 'delete_book' book.pk %}" class="rounded-xl bg-white px-4 py-2 text-sm font-semibold text-red-700 ring-1 ring-red-200 transition hover:bg-red-50">Delete</a>
+  </div>
+  {% endif %}
+</article>
+
+{# ===== reviews ===== #}
+<section class="mt-10">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h2 class="text-xl font-semibold text-stone-900">Reviews</h2>
+
+    {# which button to show depends on who is looking #}
+    {% if user.is_authenticated %}
+      {% if user_has_reviewed %}
+      <span class="text-sm text-stone-500">You have reviewed this book</span>
+      {% else %}
+      <a href="{% url 'add_review' book.pk %}" class="rounded-xl bg-amber-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-amber-500">Write a review</a>
+      {% endif %}
+    {% else %}
+    {# after logging in, ?next= brings the visitor straight to the review form #}
+    <a href="{% url 'login' %}?next={% url 'add_review' book.pk %}" class="text-sm font-medium text-amber-700 underline hover:text-amber-800">Log in to write a review</a>
+    {% endif %}
+  </div>
+
+  <div class="mt-4 space-y-4">
+    {# book.reviews comes from related_name='reviews' on Review.book #}
+    {% for review in book.reviews.all %}
+    <div class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200">
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <p class="font-semibold text-stone-900">{{ review.user.username }}</p>
+        <span class="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-medium text-stone-700">{{ review.get_rating_display }}</span>
+      </div>
+      <p class="mt-2 leading-relaxed text-stone-700">{{ review.comment|linebreaksbr }}</p>
+      <p class="mt-3 text-xs text-stone-400">{{ review.created_at|date:"M j, Y" }}</p>
+    </div>
+    {% empty %}
+    <p class="rounded-2xl border border-dashed border-stone-300 p-6 text-center text-stone-500">No reviews yet.</p>
+    {% endfor %}
+  </div>
+</section>
+{% endblock content %}
