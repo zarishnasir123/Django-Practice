@@ -1,14 +1,82 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, Count, F, Q
 from .forms import ReviewForm, BookForm
-from .models import Book, Review
+from .models import Book, Review, GENRE_CHOICES
 
 # Create your views here.
-#all books (in title order, from Meta.ordering) for the home page grid
+
+#options for the filter bar on the home page: (value in the url, text shown)
+RATING_FILTERS = [
+    ('', 'Any rating'),
+    ('3', '3 stars & up'),
+    ('4', '4 stars & up'),
+    ('4.5', '4.5 stars & up'),
+]
+
+SORT_OPTIONS = [
+    ('title', 'Title (A-Z)'),
+    ('rating', 'Highest rated'),
+    ('reviews', 'Most reviewed'),
+    ('newest', 'Newest added'),
+]
+
+
+#READ: all books, with search, filters and sorting taken from the url, e.g. /?q=clean&genre=technology
 def home(request):
-    books = Book.objects.all()
-    return render(request, 'book/home.html', {'books': books})
+    #the database works out each book's average rating and number of reviews,
+    #so we can filter and sort by them (and the page doesn't need extra queries)
+    books = Book.objects.annotate(avg_rating=Avg('reviews__rating'), review_count=Count('reviews'))
+
+    #values from the filter form (it uses method="get", so they arrive in request.GET)
+    q = request.GET.get('q', '').strip()
+    genre = request.GET.get('genre', '')
+    rating = request.GET.get('rating', '')
+    sort = request.GET.get('sort', 'title')
+
+    #ignore values that aren't in our own lists (someone could type anything in the url)
+    if genre not in dict(GENRE_CHOICES):
+        genre = ''
+    if rating not in dict(RATING_FILTERS):
+        rating = ''
+    if sort not in dict(SORT_OPTIONS):
+        sort = 'title'
+
+    #search: title OR author contains the text (icontains ignores capital letters)
+    if q:
+        books = books.filter(Q(title__icontains=q) | Q(author__icontains=q))
+
+    if genre:
+        books = books.filter(genre=genre)
+
+    if rating:
+        books = books.filter(avg_rating__gte=float(rating))
+
+    if sort == 'rating':
+        #books without reviews go to the end
+        books = books.order_by(F('avg_rating').desc(nulls_last=True), 'title')
+    elif sort == 'reviews':
+        books = books.order_by('-review_count', 'title')
+    elif sort == 'newest':
+        books = books.order_by('-created_at')
+    else:
+        books = books.order_by('title')
+
+    return render(request, 'book/home.html', {
+        'books': books,
+        #the chosen values, so the form keeps showing them
+        'q': q,
+        'genre': genre,
+        'rating': rating,
+        'sort': sort,
+        #the options for the dropdowns
+        'genre_choices': GENRE_CHOICES,
+        'rating_filters': RATING_FILTERS,
+        'sort_options': SORT_OPTIONS,
+        #True when any filter is used: shows the "Clear" link and the "no match" message
+        'filtering': bool(q or genre or rating),
+    })
 
 
 #one book with its reviews; pk comes from the url /book/<pk>/
