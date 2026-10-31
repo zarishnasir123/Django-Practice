@@ -26,8 +26,10 @@ def send_password_reset_email(user):
     token = default_token_generator.make_token(user)
     reset_link = settings.SITE_DOMAIN + reverse('reset_password_confirm', args=[uidb64, token])
 
-    body = f'Hi {user.name},\n\nReset your password with this link (it expires in 15 minutes):\n{reset_link}\n\nIf you did not ask for this, you can ignore this email.'
-    EmailThread(EmailMultiAlternatives('Reset your password', body, to=[user.email])).start()
+    html = render_to_string('accounts/password_reset_email.html', {'name': user.name, 'reset_link': reset_link})
+    email = EmailMultiAlternatives('Reset your password', strip_tags(html), to=[user.email])
+    email.attach_alternative(html, 'text/html')
+    EmailThread(email).start()
 
 
 #emails the user a link with their id (uidb64) and a token; clicking it opens activate_view
