@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+/* the templates Tailwind reads to find the classes you use (all three apps) */
+@source "../accounts/templates";
+@source "../customer/templates";
+@source "../seller/templates";
+@source "../product/templates";
+
+/* our own navy colours: use them like Tailwind's, e.g. bg-navy-900, border-navy-700 */
+@theme {
+    --color-navy-950: #071629;   /* darkest: navbar, inputs */
+    --color-navy-900: #0b1f3a;   /* the chosen colour: page background */
+    --color-navy-800: #12294a;   /* cards, active link */
+    --color-navy-700: #1c3a63;   /* borders */
+    --color-navy-600: #284b7a;   /* input borders */
+}
+
+@layer base {
+    button:not(:disabled) {
+        cursor: pointer;
+    }
+}
+
+@layer components {
+    /* text inputs in the forms (class="field") */
+    .field {
+        @apply mt-1 block w-full rounded-xl border border-navy-600 bg-navy-950 px-4 py-2.5 text-white outline-none transition placeholder:text-blue-300/60 focus:border-sky-400 focus:ring-2 focus:ring-sky-400/30;
+    }
+}

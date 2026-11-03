@@ -1,0 +1,51 @@
+{% load static %}
+<!doctype html>
+{# scheme-dark: tells the browser the page is dark, so inputs, scrollbars and autofill use dark styles #}
+<html lang="en" class="scheme-dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}AuthSystem{% endblock title %}</title>
+    {# Tailwind CSS, built from z_dev/input.css (navy-* colours are defined there) #}
+    <link rel="stylesheet" href="{% static 'accounts/css/main.css' %}">
+  </head>
+  <body class="min-h-screen bg-navy-900 text-blue-50 antialiased">
+
+    {# ===== navbar ===== #}
+    {# url_name is the name= of the current page's url, used to highlight the active link #}
+    {% with page=request.resolver_match.url_name %}
+    <header class="border-b border-navy-700 bg-navy-950">
+      <nav class="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
+        <a href="{% url 'home' %}" class="text-xl font-bold tracking-tight text-white">
+          Auth<span class="text-sky-400">System</span>
+        </a>
+
+        <div class="flex items-center gap-1 text-sm font-medium">
+          <a href="{% url 'home' %}" {% if page == 'home' %}aria-current="page"{% endif %}
+             class="rounded-lg px-3 py-2 {% if page == 'home' %}bg-navy-800 text-sky-300{% else %}text-blue-100 hover:bg-navy-800 hover:text-white{% endif %}">Home</a>
+          {# only users allowed to see products get the link #}
+          {% if perms.product.view_product %}
+          <a href="{% url 'product_list' %}" {% if request.resolver_match.app_name == 'product' or page == 'product_list' %}aria-current="page"{% endif %}
+             class="rounded-lg px-3 py-2 {% if page == 'product_list' %}bg-navy-800 text-sky-300{% else %}text-blue-100 hover:bg-navy-800 hover:text-white{% endif %}">Products</a>
+          {% endif %}
+          <a href="{% url 'register' %}" {% if page == 'register' %}aria-current="page"{% endif %}
+             class="rounded-lg px-3 py-2 {% if page == 'register' %}bg-navy-800 text-sky-300{% else %}text-blue-100 hover:bg-navy-800 hover:text-white{% endif %}">Register</a>
+          <a href="{% url 'login' %}" {% if page == 'login' %}aria-current="page"{% endif %}
+             class="rounded-lg px-3 py-2 {% if page == 'login' %}bg-navy-800 text-sky-300{% else %}text-blue-100 hover:bg-navy-800 hover:text-white{% endif %}">Login</a>
+        </div>
+      </nav>
+    </header>
+    {% endwith %}
+
+    {# ===== page content ===== #}
+    <main class="mx-auto max-w-5xl px-4 py-12">
+      {# messages from the views, e.g. messages.success(...) #}
+      {% for message in messages %}
+      <div role="alert" class="mx-auto mb-6 max-w-md rounded-xl border px-4 py-3 text-sm {% if message.level_tag == 'error' %}border-red-400/40 bg-red-500/10 text-red-300{% else %}border-emerald-400/40 bg-emerald-500/10 text-emerald-300{% endif %}">{{ message }}</div>
+      {% endfor %}
+
+      {% block content %}{% endblock content %}
+    </main>
+
+  </body>
+</html>

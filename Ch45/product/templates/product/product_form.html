@@ -1,0 +1,30 @@
+{% extends 'accounts/base.html' %}
+{# one template for add and edit #}
+
+{% block title %}{{ heading }} | AuthSystem{% endblock title %}
+
+{% block content %}
+<a href="{% url 'product_list' %}" class="text-sm font-medium text-blue-200 hover:text-white">&larr; All products</a>
+
+<div class="mx-auto mt-4 max-w-md rounded-2xl bg-navy-800 p-8 shadow-lg ring-1 ring-navy-700">
+  <h1 class="text-2xl font-bold tracking-tight text-white">{{ heading }}</h1>
+
+  <form method="post" class="mt-6 space-y-5" novalidate>
+    {% csrf_token %}
+
+    {% for field in form %}
+    <div>
+      <label for="{{ field.id_for_label }}" class="text-sm font-medium text-blue-100">{{ field.label }}</label>
+      {{ field }}
+      {% for error in field.errors %}
+      <p class="mt-1 text-sm text-red-300">{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="w-full rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-semibold text-navy-950 shadow-sm transition hover:bg-sky-400">
+      {% if product %}Save changes{% else %}Add product{% endif %}
+    </button>
+  </form>
+</div>
+{% endblock content %}
