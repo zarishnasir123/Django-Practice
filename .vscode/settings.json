@@ -48,5 +48,6 @@
         "HTML (EEx)",
         "HTML (Eex)",
         "plist"
-    ]
+    ],
+    "python-envs.defaultEnvManager": "ms-python.python:system"
 }
