@@ -1,0 +1,23 @@
+{% load cache %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course</title>
+</head>
+<body>
+    <h1>Course</h1>
+    <ul>
+        <li>Course 1</li>
+        <li>Course 2</li>
+
+
+        {% cache 30 mycourse%}
+        <li>Course 3 </li>
+        <li>Course 4 java</li>
+        {% endcache mycourse %}
+        
+    </ul>
+</body>
+</html>
