@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>School</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid #999; padding: 8px 14px; text-align: left; }
+        th { background: #eee; }
+    </style>
+</head>
+<body>
+    <h1>School - Student Data</h1>
+
+    {# "students" is the queryset sent from the view #}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Roll</th>
+            <th>City</th>
+            <th>Marks</th>
+            <th>Pass Date</th>
+        </tr>
+        {% for stu in students %}
+        <tr>
+            <td>{{ stu.id }}</td>
+            <td>{{ stu.name }}</td>
+            <td>{{ stu.roll }}</td>
+            <td>{{ stu.city }}</td>
+            <td>{{ stu.marks }}</td>
+            <td>{{ stu.pass_date }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6">No students found.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
