@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>School</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid #999; padding: 8px 14px; text-align: left; }
+        th { background: #eee; }
+    </style>
+</head>
+<body>
+    <h1>School - Student Data</h1>
+
+    {# "students" = a QuerySet (all, filter, order_by...) -> loop over it #}
+    {# "stu" = ONE object (get, first, last...) -> no loop #}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Roll</th>
+            <th>City</th>
+            <th>Marks</th>
+            <th>Pass Date</th>
+        </tr>
+        {% if students %}
+            {% for stu in students %}
+            <tr>
+                <td>{{ stu.id }}</td>
+                <td>{{ stu.name }}</td>
+                <td>{{ stu.roll }}</td>
+                <td>{{ stu.city }}</td>
+                <td>{{ stu.marks }}</td>
+                <td>{{ stu.pass_date }}</td>
+            </tr>
+            {% endfor %}
+        {% elif stu %}
+        <tr>
+            <td>{{ stu.id }}</td>
+            <td>{{ stu.name }}</td>
+            <td>{{ stu.roll }}</td>
+            <td>{{ stu.city }}</td>
+            <td>{{ stu.marks }}</td>
+            <td>{{ stu.pass_date }}</td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="6">No students found.</td>
+        </tr>
+        {% endif %}
+    </table>
+
+    <h2>Aggregate Functions</h2>
+    {# the default keys have two underscores, so read them like average.marks__avg #}
+    <p>Average: {{ average.marks__avg }}</p>
+    <p>Sum: {{ total.marks__sum }}</p>
+    <p>Minimum: {{ minimum.marks__min }}</p>
+    <p>Maximum: {{ maximum.marks__max }}</p>
+    <p>Count: {{ count.marks__count }}</p>
+
+    <h2>All in one query (own key names)</h2>
+    <p>Average: {{ result.avg_marks }} | Sum: {{ result.total_marks }} | Min: {{ result.min_marks }} | Max: {{ result.max_marks }} | Students: {{ result.total_students }}</p>
+
+    <h2>Lahore only</h2>
+    <p>Average: {{ lahore.avg_marks }} | Students: {{ lahore.total_students }}</p>
+
+    <h2>Different cities</h2>
+    <p>{{ cities.total_cities }}</p>
+
+    <h2>Annotate - report per city</h2>
+    {# annotate returns a QuerySet, so it is looped like the students #}
+    <table>
+        <tr>
+            <th>City</th>
+            <th>Students</th>
+            <th>Average Marks</th>
+            <th>Highest Marks</th>
+        </tr>
+        {% for row in city_report %}
+        <tr>
+            <td>{{ row.city }}</td>
+            <td>{{ row.total_students }}</td>
+            <td>{{ row.avg_marks }}</td>
+            <td>{{ row.max_marks }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
