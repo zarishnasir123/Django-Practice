@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product | {{ site_name }}</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}">Home</a> |
+        <a href="{% url 'product' %}">Product</a> |
+        <a href="{% url 'contact' %}">Contact</a> |
+        Cart ({{ cart_items }}) |
+        {{ greeting }}
+    </nav>
+    <hr>
+    <h1>Product</h1>
+    <p>Our products.</p>
+    <hr>
+    <footer>&copy; {{ current_year }} {{ site_name }} | {{ site_email }}</footer>
+</body>
+</html>
