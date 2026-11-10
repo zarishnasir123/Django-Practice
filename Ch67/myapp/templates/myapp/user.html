@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Data</title>
+</head>
+<body>
+    <a href="{% url 'home' %}">&larr; Home</a>
+    <h1>User Data</h1>
+    {# data1 = every User, sent from show_user_data #}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Username</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+        </tr>
+        {% for dt1 in data1 %}
+        <tr>
+            <td>{{ dt1.username }}</td>
+            <td>{{ dt1.first_name }}</td>
+            <td>{{ dt1.last_name }}</td>
+            <td>{{ dt1.email }}</td>
+        </tr>
+        {% endfor %}
+
+        <h3>Filter by page category</h3>
+        {{d}}
+    </table>
+
+    <h2>Filtered Users</h2>
+    {# data2 = the filtered users from show_user_data #}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Username</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+        </tr>
+        {% for dt2 in data2 %}
+        <tr>
+            <td>{{ dt2.username }}</td>
+            <td>{{ dt2.first_name }}</td>
+            <td>{{ dt2.last_name }}</td>
+            <td>{{ dt2.email }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No users match this filter.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

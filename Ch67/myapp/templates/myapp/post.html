@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Data</title>
+</head>
+<body>
+    <a href="{% url 'home' %}">&larr; Home</a>
+    <h1>Post Data</h1>
+    {# post.user = the user who wrote it; one user can have many posts (many to one) #}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Title</th>
+            <th>Post</th>
+            <th>Published</th>
+            <th>User</th>
+        </tr>
+        {% for dt in data3 %}
+        <tr>
+            <td>{{ dt.title }}</td>
+            <td>{{ dt.post }}</td>
+            <td>{{ dt.ptpublished }}</td>
+            <td>{{ dt.user.username }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

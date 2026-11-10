@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Song Data</title>
+</head>
+<body>
+    <a href="{% url 'home' %}">&larr; Home</a>
+    <h1>Song Data</h1>
+    {# song.user.all = every user of this song (many to many), so it needs its own loop #}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Song</th>
+            <th>Duration (sec)</th>
+            <th>Users</th>
+        </tr>
+        {% for dt in data4 %}
+        <tr>
+            <td>{{ dt.stitle }}</td>
+            <td>{{ dt.sduration }}</td>
+            <td>{% for u in dt.user.all %}{{ u.username }}{% if not forloop.last %}, {% endif %}{% endfor %}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

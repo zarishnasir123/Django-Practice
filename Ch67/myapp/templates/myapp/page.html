@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Page Data</title>
+</head>
+<body>
+    <a href="{% url 'home' %}">&larr; Home</a>
+    <h1>Page Data</h1>
+    {# page.user = the ONE user of this page (one to one) #}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Page Name</th>
+            <th>Category</th>
+            <th>Published</th>
+            <th>User</th>
+        </tr>
+        {% for dt in data2 %}
+        <tr>
+            <td>{{ dt.pname }}</td>
+            <td>{{ dt.pcat }}</td>
+            <td>{{ dt.ppublished }}</td>
+            <td>{{ dt.user.username }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
