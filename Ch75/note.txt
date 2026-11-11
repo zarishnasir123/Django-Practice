@@ -1,0 +1,95 @@
+Chapter 75 - Django Async ORM: which methods are async and which are not
+=======================================================================
+
+The rule
+--------
+Django's ORM talks to the database synchronously. Inside an "async def" view
+you may NOT run code that hits the database directly, or Django raises:
+
+    SynchronousOnlyOperation: You cannot call this from an async context
+
+So in an async view, every database hit must be one of:
+  1. an async method (name starts with "a") with await,
+  2. "async for" over a QuerySet, or
+  3. normal sync code wrapped in sync_to_async (Ch72).
+
+
+1. Methods that only BUILD a query (no database hit) -> safe anywhere
+---------------------------------------------------------------------
+These return a new QuerySet; nothing is sent to the database yet,
+so they need no "a" version and no await:
+
+    all()  filter()  exclude()  order_by()  reverse()  distinct()
+    values()  values_list()  annotate()  alias()  only()  defer()
+    select_related()  prefetch_related()  using()  none()
+    union()  intersection()  difference()  slicing like [:5]
+
+    qs = Student.objects.filter(age__gte=18).order_by('name')   # OK in async (no query yet)
+
+
+2. Methods that RUN a query -> use the async version
+----------------------------------------------------
+Sync (blocks)                Async (await it)
+---------------------------  ---------------------------------
+get()                        await aget()
+create()                     await acreate()
+get_or_create()              await aget_or_create()
+update_or_create()           await aupdate_or_create()
+bulk_create()                await abulk_create()
+bulk_update()                await abulk_update()
+count()                      await acount()
+exists()                     await aexists()
+contains()                   await acontains()
+first() / last()             await afirst() / await alast()
+latest() / earliest()        await alatest() / await aearliest()
+in_bulk()                    await ain_bulk()
+aggregate()                  await aaggregate()
+update()                     await aupdate()
+delete()                     await adelete()
+explain()                    await aexplain()
+iterator()                   async for x in qs.aiterator()
+for x in qs                  async for x in qs
+
+On one model object:
+obj.save()                   await obj.asave()
+obj.delete()                 await obj.adelete()
+obj.refresh_from_db()        await obj.arefresh_from_db()
+
+On a many-to-many / reverse relation (e.g. song.user):
+add() remove() clear() set() create()
+                             await aadd() aremove() aclear() aset() acreate()
+
+Examples:
+    student = await Student.objects.aget(pk=1)
+    total   = await Student.objects.acount()
+    new     = await Student.objects.acreate(name='Ali', email='ali@example.com', age=20)
+    async for s in Student.objects.filter(age__gte=18):
+        print(s.name)
+
+
+3. Things that hit the database WITHOUT looking like it -> NOT allowed in async
+-------------------------------------------------------------------------------
+These have no "a" version; avoid them in an async view
+(or wrap them in sync_to_async):
+
+    for s in qs:            -> use  async for s in qs
+    list(qs) / len(qs)      -> use  [s async for s in qs] / await qs.acount()
+    if qs:                  -> use  await qs.aexists()
+    print(qs)               -> prints the rows, so it runs the query
+    qs[0]                   -> use  await qs.afirst()
+    student.city.name       -> following a ForeignKey loads the related row lazily;
+                               use select_related('city') in the query first
+    {% for s in qs %}       -> a template loops synchronously; send a list instead
+                               (that is why home() in views.py collects students into a list)
+
+Also still synchronous only (wrap in sync_to_async):
+    transaction.atomic()
+    raw() queries and connection.cursor()
+
+
+Quick memory trick
+------------------
+Builds a query  -> no "a"            (filter, order_by, values ...)
+Runs a query    -> "a" + await       (aget, acount, acreate, asave ...)
+Loops a query   -> async for
+Anything else   -> sync_to_async
