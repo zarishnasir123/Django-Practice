@@ -117,7 +117,7 @@ All of these use the same 10 students, so you can compare results.
 
 - **Ch68:** Context processors: the site name, a cart count read from the session, and a "Hello, user" greeting available in every template without sending them from any view.
 
-### Async Django (Ch69–Ch75)
+### Async Django (Ch69–Ch76)
 
 - **Ch69:** Running Django on ASGI with Daphne (added to `INSTALLED_APPS`, then `runserver` uses it).
 - **Ch70:** Running Django with Uvicorn: `uvicorn Ch70.asgi:application --reload`.
@@ -126,6 +126,13 @@ All of these use the same 10 students, so you can compare results.
 - **Ch73:** Fixing missing CSS on Uvicorn with `ASGIStaticFilesHandler` in `asgi.py`.
 - **Ch74:** The same fix with WhiteNoise in `settings.py`.
 - **Ch75:** The async ORM: `async for`, `acount()`, `afirst()` and others. `note.txt` lists which ORM calls work in async views and which don't.
+- **Ch76:** Async middleware: a function middleware and a class middleware that are async only (`sync_capable` / `async_capable`, `markcoroutinefunction`), and a hybrid one that works under both `runserver` and Uvicorn. Tested with an async view that waits one second.
+
+### Class-based views (Ch77–Ch79)
+
+- **Ch77:** My first class-based views with the base `View` class. I wrote the same pages (home, about, contact with a form, news) first as function views, then as classes with `get()` and `post()`, and connected them with `.as_view()`. The contact form shows a thank-you page after a valid submit. One `NewsView` class serves two templates by changing `template_name` in `as_view()`.
+- **Ch78:** `TemplateView`: `template_name`, sending data with `get_context_data()` (and why `super()` comes first), `extra_context`, and URL values arriving in `kwargs`. Pages like home, about, contact and profile, some with their own class and some with `TemplateView` straight in `urls.py`.
+- **Ch79:** `RedirectView`: redirecting to a fixed `url`, to a URL name with `pattern_name`, temporary (302) vs `permanent=True` (301), carrying URL values over, keeping `?q=` with `query_string=True`, and working out the address in `get_redirect_url()`.
 
 ## Small projects
 
@@ -163,9 +170,11 @@ The databases aren't in the repo anymore (older commits still have them, but tho
 - In `urls.py`, `name='home'` needs quotes. Without quotes it's the view function, not a name.
 - Middleware runs top to bottom on the way in and bottom to top on the way out. If your middleware blocks pages, let `/admin/` through or you can't get back in to turn it off.
 - `runserver` serves CSS for you. Uvicorn and Daphne don't, so the admin looks broken until you fix static files (Ch73–Ch74).
+- With class-based views, check which class `urls.py` calls. I wrote `get_context_data()` in my own class, but the URL used the generic `TemplateView`, so my values never showed up. The URL has to point to `views.MyClass.as_view()`.
+- A comma is easy to forget in `urls.py`: a missing one made Pylance say `"[" was not closed`. Also, options like `extra_context` go inside `as_view(...)`, not inside `path(...)`.
 - In async views, normal ORM calls like `Student.objects.get()` fail. Use `aget()`, `acount()`, `async for`, or `sync_to_async`.
 - In the earlier chapters I pushed `db.sqlite3` too. That was fine here because it only had practice data (dummy students and test users), but in a real project the database holds real users, so I stopped and added it to `.gitignore`. Do the same with `.env` files from day one.
 
 ## What I'm learning next
 
-Class-based views, Django REST Framework, testing, and deploying a project.
+More class-based views (`ListView`, `DetailView` and the form and edit views), Django REST Framework, testing, and deploying a project.
