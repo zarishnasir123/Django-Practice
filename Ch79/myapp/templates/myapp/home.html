@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+    <h1>Home Page</h1>
+    <p>Pages: <a href="{% url 'about' %}">About</a> | <a href="{% url 'news' 5 %}">News 5</a></p>
+
+    <h3>Redirects (click and watch the address bar)</h3>
+    <ul>
+        <li><a href="{% url 'go_home' %}">/go-home/</a> redirects to the home page (url)</li>
+        <li><a href="{% url 'old_about' %}">/old-about/</a> redirects to About (pattern_name, permanent)</li>
+        <li><a href="/old-news/7/">/old-news/7/</a> redirects to News 7 (URL value is carried over)</li>
+        <li><a href="/old-search/?q=django">/old-search/?q=django</a> redirects to Results and keeps ?q=django (query_string)</li>
+        <li><a href="/latest-news/">/latest-news/</a> redirects to the newest news (get_redirect_url)</li>
+        <li><a href="{% url 'django_site' %}">/django-site/</a> redirects to another website</li>
+    </ul>
+</body>
+</html>
