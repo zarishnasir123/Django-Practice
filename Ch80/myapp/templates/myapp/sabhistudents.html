@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sabhi Students</title>
+</head>
+<body>
+    <h1>Sabhi Students</h1>
+
+    <h2>Python Students</h2>
+    {# students = the main list: get_queryset() keeps only the Python students, and context_object_name names it "students" #}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Roll</th>
+            <th>Course</th>
+        </tr>
+        {% for student in students %}
+        <tr>
+            <td>{{ student.id }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.roll }}</td>
+            <td>{{ student.course }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No Python students yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Java Students</h2>
+    {# java_students = an extra value added in get_context_data() #}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Roll</th>
+            <th>Course</th>
+        </tr>
+        {% for student in java_students %}
+        <tr>
+            <td>{{ student.id }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.roll }}</td>
+            <td>{{ student.course }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No Java students yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

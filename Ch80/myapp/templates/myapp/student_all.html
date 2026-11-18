@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Students</title>
+</head>
+<body>
+    <h1>All Students</h1>
+
+    {# template_name_suffix = '_all' makes the name student_all.html; ordering = ['roll'] sorts the rows by roll #}
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Roll</th>
+            <th>Course</th>
+        </tr>
+        {% for student in student_list %}
+        <tr>
+            <td>{{ student.id }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.roll }}</td>
+            <td>{{ student.course }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No students yet.</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
