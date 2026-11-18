@@ -1,0 +1,59 @@
+{% extends 'book/base.html' %}
+
+{% block title %}{{ book.title }} | Book Review{% endblock title %}
+
+{% block content %}
+<a href="{% url 'book_list' %}" class="text-decoration-none"><i class="bi bi-arrow-left me-1"></i>All books</a>
+
+{# book (or object) is the single Book a DetailView sends #}
+<div class="card border-0 shadow-sm mt-3 overflow-hidden">
+    <div class="row g-0">
+        <div class="col-md-4">
+            {% if book.cover_image %}
+            <img src="{{ book.cover_image.url }}" alt="Cover of {{ book.title }}" class="cover-img-detail">
+            {% else %}
+            <div class="cover cover-detail cover-1 h-100">{{ book.title|slice:":1" }}</div>
+            {% endif %}
+        </div>
+        <div class="col-md-8">
+            <div class="card-body p-4">
+                <span class="badge text-bg-primary-subtle text-primary-emphasis mb-2">{{ book.get_genre_display }}</span>
+                <h1 class="h2 fw-bold mb-1">{{ book.title }}</h1>
+                <p class="text-muted mb-2">by <span class="fw-semibold text-body">{{ book.author }}</span></p>
+
+                <div class="mb-3">
+                    <span class="stars fs-5" style="--rating: {{ book.average_rating }};" aria-hidden="true"></span>
+                    <span class="fw-semibold ms-1">{{ book.average_rating }}</span>
+                    <span class="text-muted">/ 5</span>
+                </div>
+
+                {% if book.description %}
+                <p class="lead fs-6">{{ book.description|linebreaksbr }}</p>
+                {% endif %}
+
+                <ul class="list-group list-group-flush mb-3">
+                    <li class="list-group-item d-flex justify-content-between px-0">
+                        <span class="text-muted"><i class="bi bi-upc-scan me-2"></i>ISBN</span>
+                        <span>{{ book.isbn|default:"-" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0">
+                        <span class="text-muted"><i class="bi bi-calendar-event me-2"></i>Publication date</span>
+                        <span>{{ book.publication_date|default:"-" }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between px-0">
+                        <span class="text-muted"><i class="bi bi-calendar3 me-2"></i>Published year</span>
+                        <span>{{ book.published_year|default:"-" }}</span>
+                    </li>
+                </ul>
+
+                <a href="{% url 'book_update' book.pk %}" class="btn btn-primary"><i class="bi bi-pencil-square me-1"></i>Edit book</a>
+                <a href="{% url 'book_list' %}" class="btn btn-outline-secondary">Back</a>
+                <a href="{% url 'book_delete' book.pk %}" class="btn btn-outline-danger float-end"><i class="bi bi-trash me-1"></i>Delete</a>
+            </div>
+            <div class="card-footer bg-transparent text-muted small px-4">
+                Added {{ book.created_at|date:"d M Y, H:i" }} &middot; Last updated {{ book.updated_at|date:"d M Y, H:i" }}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

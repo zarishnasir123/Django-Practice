@@ -21,3 +21,6 @@ staticfiles/
 
 # Secret settings
 .env
+
+# Uploaded book covers (BookReviewCBV)
+BookReviewCBV/media/

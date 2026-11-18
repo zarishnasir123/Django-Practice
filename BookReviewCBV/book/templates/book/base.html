@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Book Review{% endblock title %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f6f7fb; }
+        .navbar-brand i { color: #ffc107; }
+
+        /* star rating: --rating is 0 to 5, the gold part of the 5 stars is rating / 5 wide */
+        .stars { --percent: calc(var(--rating) / 5 * 100%); display: inline-block; font-size: 1.05rem; line-height: 1; letter-spacing: 2px; }
+        .stars::before {
+            content: '★★★★★';
+            background: linear-gradient(90deg, #ffb703 var(--percent), #d9dde3 var(--percent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* book cards on the list page */
+        .book-card { transition: transform .15s ease, box-shadow .15s ease; border: 0; }
+        .book-card:hover { transform: translateY(-4px); box-shadow: 0 .75rem 1.5rem rgba(33, 37, 41, .12) !important; }
+        .book-card .stretched-link { text-decoration: none; }
+
+        /* a coloured block with the first letter, instead of a cover image */
+        .cover { display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; }
+        .cover-1 { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+        .cover-2 { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
+        .cover-3 { background: linear-gradient(135deg, #10b981, #0d9488); }
+        .cover-4 { background: linear-gradient(135deg, #f97316, #ef4444); }
+        .cover-5 { background: linear-gradient(135deg, #ec4899, #db2777); }
+        .cover-card { height: 240px; font-size: 3rem; }
+        .cover-detail { min-height: 320px; font-size: 6rem; }
+        /* a real cover image fills the same block as the letter cover */
+        .cover-img { width: 100%; height: 240px; object-fit: cover; }
+        .cover-img-detail { width: 100%; height: 100%; min-height: 320px; object-fit: cover; }
+    </style>
+</head>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand navbar-dark bg-dark sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-semibold" href="{% url 'book_list' %}"><i class="bi bi-journal-bookmark-fill me-2"></i>Book Review</a>
+            <div class="navbar-nav ms-auto align-items-center gap-2">
+                <a class="nav-link" href="{% url 'book_list' %}"><i class="bi bi-collection me-1"></i>All books</a>
+                <a class="nav-link" href="{% url 'book_latest' %}"><i class="bi bi-stars me-1"></i>Latest</a>
+                <a class="nav-link" href="{% url 'book_random' %}"><i class="bi bi-shuffle me-1"></i>Random</a>
+                <a class="btn btn-warning btn-sm" href="{% url 'book_create' %}"><i class="bi bi-plus-lg me-1"></i>Add book</a>
+            </div>
+        </div>
+    </nav>
+
+    {# messages added in the views with messages.success(...) / messages.error(...); each shows once #}
+    {% if messages %}
+    <div class="container pt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+            <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% elif message.tags == 'danger' %}bi-exclamation-triangle-fill{% elif message.tags == 'warning' %}bi-exclamation-circle-fill{% else %}bi-info-circle-fill{% endif %} me-2"></i>
+            <div>{{ message }}</div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="container py-4 flex-grow-1">
+        {% block content %}{% endblock content %}
+    </main>
+
+    <footer class="border-top bg-white py-3 mt-auto">
+        <div class="container text-center text-muted small">Book Review &middot; built with Django class based views</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
