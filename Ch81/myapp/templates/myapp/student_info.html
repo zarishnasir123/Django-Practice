@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ student.name }} - Info</title>
+</head>
+<body>
+    <h1>Student Info</h1>
+
+    {# this template is found because template_name_suffix = '_info': myapp/student_info.html #}
+    <p>
+        <strong>{{ student.name }}</strong> (roll no. {{ student.roll }})
+        is studying <strong>{{ student.course }}</strong>.
+    </p>
+</body>
+</html>
