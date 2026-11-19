@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Student</title>
+</head>
+<body>
+    <h1>Add Student</h1>
+
+    {# form = the form the CreateView builds from model + fields; as_p shows every field in its own <p> #}
+    {# this file is found by name: <app>/<model>_form.html = myapp/student_form.html #}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save</button>
+    </form>
+</body>
+</html>
