@@ -1,0 +1,40 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}All Students{% endblock title %}
+
+{% block content %}
+<h1 class="h3 mb-3">All Students</h1>
+
+{# student_list = the QuerySet the ListView sends (object_list is the same thing) #}
+<table class="table table-bordered table-striped bg-white">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Roll</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in student_list %}
+        <tr>
+            <td>{{ student.id }}</td>
+            <td>{{ student.name }}</td>
+            <td>{{ student.email }}</td>
+            <td>{{ student.roll }}</td>
+            <td>
+                {# every link carries the student's pk, the url takes it as <int:pk> #}
+                <a href="{% url 'studentdetail' student.pk %}" class="btn btn-info btn-sm">View</a>
+                <a href="{% url 'studentupdate' student.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                <a href="{% url 'studentdelete' student.pk %}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No students yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

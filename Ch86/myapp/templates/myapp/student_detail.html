@@ -1,0 +1,31 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}{{ student.name }}{% endblock title %}
+
+{% block content %}
+<h1 class="h3 mb-3">Student Detail</h1>
+
+{# student = the one row the DetailView sends (object is the same thing) #}
+<table class="table table-bordered bg-white" style="max-width: 500px;">
+    <tr>
+        <th>ID</th>
+        <td>{{ student.id }}</td>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <td>{{ student.name }}</td>
+    </tr>
+    <tr>
+        <th>Email</th>
+        <td>{{ student.email }}</td>
+    </tr>
+    <tr>
+        <th>Roll</th>
+        <td>{{ student.roll }}</td>
+    </tr>
+</table>
+
+<a href="{% url 'studentupdate' student.pk %}" class="btn btn-warning">Edit</a>
+<a href="{% url 'studentdelete' student.pk %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'studentlist' %}" class="btn btn-secondary">Back</a>
+{% endblock content %}

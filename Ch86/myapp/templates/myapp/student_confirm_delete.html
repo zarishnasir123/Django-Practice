@@ -1,0 +1,17 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}Delete Student{% endblock title %}
+
+{% block content %}
+<h1 class="h3 mb-3">Delete Student</h1>
+
+{# student = the one row the DeleteView sends (object is the same thing) #}
+<p>Are you sure you want to delete <strong>{{ student.name }}</strong> (roll {{ student.roll }})?</p>
+
+{# a POST is what really deletes the row; a GET only shows this page #}
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, delete</button>
+    <a href="{% url 'studentlist' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock content %}
