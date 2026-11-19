@@ -1,0 +1,28 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}{{ product.name }} | Marketplace{% endblock title %}
+
+{% block content %}
+<a href="{% url 'product_list' %}" class="text-decoration-none">&larr; All products</a>
+
+{# product = the one row the DetailView sends (object is the same thing) #}
+<div class="card border-0 shadow mt-3 mx-auto" style="max-width: 600px;">
+    <div class="card-body p-4">
+        <h1 class="h3 fw-bold mb-1">{{ product.name }}</h1>
+        <p class="text-muted mb-3">sold by <strong>{{ product.seller.username }}</strong></p>
+
+        <p class="display-6 fw-bold text-primary mb-3">Rs. {{ product.price }}</p>
+
+        {% if product.description %}
+        <p>{{ product.description|linebreaksbr }}</p>
+        {% endif %}
+
+        {% if product.stock > 0 %}
+        <span class="badge text-bg-success">In stock ({{ product.stock }} left)</span>
+        {% else %}
+        <span class="badge text-bg-secondary">Out of stock</span>
+        {% endif %}
+    </div>
+    <div class="card-footer bg-transparent small text-muted px-4">Added {{ product.created_at|date:"d M Y" }}</div>
+</div>
+{% endblock content %}

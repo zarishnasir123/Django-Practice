@@ -1,0 +1,15 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}{{ title }} | Marketplace{% endblock title %}
+
+{# One page for every "done" message (password changed, check your email...). #}
+{# title, message, link and link_text are sent by each view with extra_context. #}
+{% block content %}
+<div class="card border-0 shadow mx-auto text-center" style="max-width: 450px;">
+    <div class="card-body p-4">
+        <h1 class="h3 fw-bold mb-3">{{ title }}</h1>
+        <p class="text-muted">{{ message }}</p>
+        <a href="{{ link }}" class="btn btn-dark">{{ link_text }}</a>
+    </div>
+</div>
+{% endblock content %}

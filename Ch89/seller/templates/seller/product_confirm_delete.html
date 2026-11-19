@@ -1,0 +1,20 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Delete product | Marketplace{% endblock title %}
+
+{% block content %}
+{# product = the one row the DeleteView sends (object is the same thing) #}
+<div class="card border-0 shadow mx-auto text-center" style="max-width: 450px;">
+    <div class="card-body p-4">
+        <h1 class="h4 fw-bold mb-3">Delete product</h1>
+        <p>Are you sure you want to delete <strong>{{ product.name }}</strong>?</p>
+
+        {# a POST is what really deletes the row; a GET only shows this page #}
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Yes, delete</button>
+            <a href="{% url 'seller_products' %}" class="btn btn-secondary">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock content %}

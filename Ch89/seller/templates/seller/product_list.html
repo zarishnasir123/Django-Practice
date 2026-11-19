@@ -1,0 +1,54 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}My products | Marketplace{% endblock title %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <div>
+        <h1 class="h3 fw-bold mb-1">My products</h1>
+        <p class="text-muted mb-0">{{ product_list|length }} product{{ product_list|length|pluralize }}</p>
+    </div>
+    {# perms = what the logged in user may do (it asks has_perm in accounts/models.py) #}
+    {% if perms.product.add_product %}
+    <a href="{% url 'seller_product_add' %}" class="btn btn-success">+ Add product</a>
+    {% endif %}
+</div>
+
+{# product_list = the products of this seller (the view filtered them) #}
+<div class="table-responsive">
+    <table class="table table-bordered table-striped bg-white align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Added</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in product_list %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>Rs. {{ product.price }}</td>
+                <td>{{ product.stock }}</td>
+                <td>{{ product.created_at|date:"d M Y" }}</td>
+                <td>
+                    <a href="{% url 'product_detail' product.pk %}" class="btn btn-info btn-sm">View</a>
+                    {% if perms.product.change_product %}
+                    <a href="{% url 'seller_product_edit' product.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                    {% endif %}
+                    {% if perms.product.delete_product %}
+                    <a href="{% url 'seller_product_delete' product.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center py-4">You have no products yet. Add your first one.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

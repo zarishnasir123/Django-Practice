@@ -1,0 +1,42 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Products | Marketplace{% endblock title %}
+
+{% block content %}
+<div class="mb-4">
+    <h1 class="h3 fw-bold mb-1">Products</h1>
+    <p class="text-muted mb-0">{{ product_list|length }} product{{ product_list|length|pluralize }} from our sellers</p>
+</div>
+
+{# product_list = the QuerySet the ListView sends #}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+    {% for product in product_list %}
+    <div class="col">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body d-flex flex-column">
+                <h2 class="h5 fw-bold mb-1">
+                    <a href="{% url 'product_detail' product.pk %}" class="stretched-link text-dark text-decoration-none">{{ product.name }}</a>
+                </h2>
+                <p class="text-muted small mb-3">by {{ product.seller.username }}</p>
+                <p class="text-muted small">{{ product.description|truncatechars:80 }}</p>
+                {# mt-auto pushes the price row to the bottom, so every card ends at the same height #}
+                <div class="d-flex justify-content-between align-items-center mt-auto">
+                    <span class="fw-bold text-primary">Rs. {{ product.price }}</span>
+                    {% if product.stock > 0 %}
+                    <span class="badge text-bg-success">In stock</span>
+                    {% else %}
+                    <span class="badge text-bg-secondary">Out of stock</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="text-center bg-white rounded-3 p-5 shadow-sm">
+            <p class="lead mb-0">No products yet.</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

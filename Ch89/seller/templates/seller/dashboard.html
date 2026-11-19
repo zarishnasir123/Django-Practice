@@ -1,0 +1,33 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Seller Dashboard | Marketplace{% endblock title %}
+
+{% block content %}
+<div class="card border-0 shadow mx-auto" style="max-width: 500px;">
+    <div class="card-body p-4">
+        <h1 class="h4 fw-bold mb-1">Hello, {{ user.username }}</h1>
+        <span class="badge text-bg-success mb-3">Seller</span>
+
+        {# user = the logged in user, the fields of the custom user model #}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Username</span><span>{{ user.username }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Email</span><span>{{ user.email }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">My products</span><span>{{ product_count }}</span>
+            </li>
+        </ul>
+
+        {# a seller may add, change and delete products, so these two buttons are shown #}
+        {% if perms.product.add_product %}
+        <div class="d-flex gap-2 mt-4">
+            <a href="{% url 'seller_products' %}" class="btn btn-success w-100">Manage my products</a>
+            <a href="{% url 'seller_product_add' %}" class="btn btn-outline-success w-100">+ Add product</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
