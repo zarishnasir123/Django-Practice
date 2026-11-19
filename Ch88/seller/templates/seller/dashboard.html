@@ -1,0 +1,22 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Seller Dashboard | Marketplace{% endblock title %}
+
+{% block content %}
+<div class="card border-0 shadow mx-auto" style="max-width: 500px;">
+    <div class="card-body p-4">
+        <h1 class="h4 fw-bold mb-1">Hello, {{ user.username }}</h1>
+        <span class="badge text-bg-success mb-3">Seller</span>
+
+        {# user = the logged in user, the fields of the custom user model #}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Username</span><span>{{ user.username }}</span>
+            </li>
+            <li class="list-group-item d-flex justify-content-between px-0">
+                <span class="text-muted">Email</span><span>{{ user.email }}</span>
+            </li>
+        </ul>
+    </div>
+</div>
+{% endblock content %}

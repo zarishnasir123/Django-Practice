@@ -78,7 +78,7 @@ If you're learning Django too, feel free to go through it in the same order. I'v
 - **Ch44:** Role-based registration (sign up as a customer or a seller) with a few extra security checks.
 - **Ch45:** Giving permissions in code. A config file says which role gets which permissions, and they're added when a user registers. Customers can only view products; sellers can add, edit and delete them. Buttons in the templates are hidden with `perms` too.
 
-Ch42–Ch45 are all function-based views. I did the same idea again with class-based views in Ch87 (see below).
+Ch42–Ch45 are all function-based views. I did the same idea again with class-based views in Ch87 and Ch88 (see below).
 
 ### Cookies, sessions, caching (Ch46–Ch52)
 
@@ -144,7 +144,7 @@ All of these use the same 10 students, so you can compare results.
 - **Ch85:** `DeleteView`: a GET shows the "are you sure?" page (`student_confirm_delete.html`) and a POST deletes the row. It needs a `success_url`, written with `reverse_lazy`, because the row is gone and there is nothing to go back to.
 - **Ch86:** A CRUD project with all five generic views on one `Student` model (name, email, roll): list, detail, add, edit and delete, with one `student_form.html` shared by add and edit, and a `base.html` with Bootstrap.
 
-### Authentication with class-based views (Ch87)
+### Authentication with class-based views (Ch87–Ch88)
 
 - **Ch87:** The Ch42 idea again, but with class-based views and less code, in three apps (`accounts`, `customer`, `seller`):
   - a custom user model built from `AbstractBaseUser`, with my own `BaseUserManager` (`create_user` and `create_superuser`), the `has_perm` and `has_module_perms` methods the admin asks for, and two extra fields, `is_customer` and `is_seller`, set with `AUTH_USER_MODEL`
@@ -152,7 +152,11 @@ All of these use the same 10 students, so you can compare results.
   - login with the **email** (`USERNAME_FIELD = 'email'`), and `LogoutView` (logout has to be a POST)
   - change password with the old password (`PasswordChangeView`) and forgot password by email (`PasswordResetView` and the three pages after it), with an HTML email card
   - Gmail settings read from a `.env` file with `python-dotenv`; without the file the emails are printed in the terminal instead
-  - I left the login rules (mixins) out for now, so the dashboards are open to anyone who knows the address
+  - I left the login rules (mixins) out in this chapter, so the dashboards are open to anyone who knows the address. Ch88 fixes that.
+- **Ch88:** Ch87 again (same three apps, with a fresh database) with mixins that restrict each dashboard to one role:
+  - `CustomerRequiredMixin` and `SellerRequiredMixin` in `accounts/mixins.py`. Each one combines `LoginRequiredMixin` with `UserPassesTestMixin`, whose `test_func()` checks `is_customer` or `is_seller`
+  - the mixin is written before the view (`class CustomerDashboardView(CustomerRequiredMixin, TemplateView)`), so the login is checked first and the role second
+  - a visitor who isn't logged in is sent to the login page; a logged in user with the wrong role gets a 403 page (my own `403.html`) with a button back to their own dashboard
 
 ## Small projects
 
@@ -187,7 +191,7 @@ A few chapters have a `requirements.txt`. Later chapters need an extra package; 
 
 For the async chapters, run the server with Uvicorn instead, for example `uvicorn Ch75.asgi:application --reload`.
 
-The databases aren't in the repo anymore (older commits still have them, but those were only practice data), so every chapter starts empty. Add your own data through admin. The email chapters (Ch42–Ch45 and Ch87) need your own Gmail address and App Password in a `.env` file (`GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD`). Without it, Ch87 prints the emails in the terminal.
+The databases aren't in the repo anymore (older commits still have them, but those were only practice data), so every chapter starts empty. Add your own data through admin. The email chapters (Ch42–Ch45, Ch87 and Ch88) need your own Gmail address and App Password in a `.env` file (`GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD`). Without it, Ch87 and Ch88 print the emails in the terminal.
 
 ## Mistakes I made (so you don't have to)
 
@@ -212,4 +216,4 @@ The databases aren't in the repo anymore (older commits still have them, but tho
 
 ## What I'm learning next
 
-Redoing BookReviewCBV with the generic class-based views (`ListView`, `DetailView`, `CreateView`, `UpdateView` and `DeleteView`) to use even less code, adding the login rules (mixins) back to the Ch87 dashboards, Django REST Framework, testing, and deploying a project.
+Redoing BookReviewCBV with the generic class-based views (`ListView`, `DetailView`, `CreateView`, `UpdateView` and `DeleteView`) to use even less code, Django REST Framework, testing, and deploying a project.

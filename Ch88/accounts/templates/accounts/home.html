@@ -1,0 +1,48 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Home | Marketplace{% endblock title %}
+
+{% block content %}
+<div class="text-center mb-4">
+    <h1 class="display-6 fw-bold">Welcome to the marketplace</h1>
+    <p class="lead text-muted">Buy as a customer, or open your shop as a seller.</p>
+</div>
+
+{% if user.is_authenticated %}
+<div class="card border-0 shadow-sm text-center mx-auto" style="max-width: 450px;">
+    <div class="card-body p-4">
+        <p class="mb-1">You are logged in as <strong>{{ user.username }}</strong></p>
+        {# is_customer and is_seller are the two fields added to the custom user model #}
+        {% if user.is_customer %}
+        <a href="{% url 'customer_dashboard' %}" class="btn btn-primary mt-2">Go to my dashboard</a>
+        {% elif user.is_seller %}
+        <a href="{% url 'seller_dashboard' %}" class="btn btn-success mt-2">Go to my dashboard</a>
+        {% else %}
+        <p class="text-muted small mb-0">This account is neither a customer nor a seller (for example the admin).</p>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="row g-4 justify-content-center">
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm text-center h-100">
+            <div class="card-body p-4">
+                <i class="bi bi-bag-heart display-4 text-primary"></i>
+                <h2 class="h5 fw-bold mt-3">I want to buy</h2>
+                <a href="{% url 'customer_signup' %}" class="btn btn-primary w-100 mt-2">Join as customer</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5">
+        <div class="card border-0 shadow-sm text-center h-100">
+            <div class="card-body p-4">
+                <i class="bi bi-shop display-4 text-success"></i>
+                <h2 class="h5 fw-bold mt-3">I want to sell</h2>
+                <a href="{% url 'seller_signup' %}" class="btn btn-success w-100 mt-2">Join as seller</a>
+            </div>
+        </div>
+    </div>
+</div>
+<p class="text-center mt-4">Already a member? <a href="{% url 'login' %}">Login</a></p>
+{% endif %}
+{% endblock content %}
