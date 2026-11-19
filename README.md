@@ -11,6 +11,7 @@ If you're learning Django too, feel free to go through it in the same order. I'v
 - Each chapter has its own project and its own virtual environment, so breaking one chapter never broke the others.
 - Chapters build on each other, so the order below is the order I'd recommend.
 - From Ch56 onwards I used the same 10 students (same names, cities and marks) in every database chapter, so it's easy to compare what each query returns.
+- The generic class-based view chapters (Ch80–Ch86) use a small `Student` model again (name plus roll, course, email or password), so the views are easy to compare.
 - `Bistro`, `BookReview`, `BookReviewCBV` and `underconst` are small projects where I put things together.
 
 ## Chapter list
@@ -77,6 +78,8 @@ If you're learning Django too, feel free to go through it in the same order. I'v
 - **Ch44:** Role-based registration (sign up as a customer or a seller) with a few extra security checks.
 - **Ch45:** Giving permissions in code. A config file says which role gets which permissions, and they're added when a user registers. Customers can only view products; sellers can add, edit and delete them. Buttons in the templates are hidden with `perms` too.
 
+Ch42–Ch45 are all function-based views. I did the same idea again with class-based views in Ch87 (see below).
+
 ### Cookies, sessions, caching (Ch46–Ch52)
 
 - **Ch46:** Cookies: `set_cookie`, reading them from `request.COOKIES`, expiry with `max_age` and `expires`, signed cookies, and deleting. There's a `readme.txt` in this folder about `set_cookie`.
@@ -128,18 +131,34 @@ All of these use the same 10 students, so you can compare results.
 - **Ch75:** The async ORM: `async for`, `acount()`, `afirst()` and others. `note.txt` lists which ORM calls work in async views and which don't.
 - **Ch76:** Async middleware: a function middleware and a class middleware that are async only (`sync_capable` / `async_capable`, `markcoroutinefunction`), and a hybrid one that works under both `runserver` and Uvicorn. Tested with an async view that waits one second.
 
-### Class-based views (Ch77–Ch80)
+### Class-based views (Ch77–Ch86)
 
 - **Ch77:** My first class-based views with the base `View` class. I wrote the same pages (home, about, contact with a form, news) first as function views, then as classes with `get()` and `post()`, and connected them with `.as_view()`. The contact form shows a thank-you page after a valid submit. One `NewsView` class serves two templates by changing `template_name` in `as_view()`.
 - **Ch78:** `TemplateView`: `template_name`, sending data with `get_context_data()` (and why `super()` comes first), `extra_context`, and URL values arriving in `kwargs`. Pages like home, about, contact and profile, some with their own class and some with `TemplateView` straight in `urls.py`.
 - **Ch79:** `RedirectView`: redirecting to a fixed `url`, to a URL name with `pattern_name`, temporary (302) vs `permanent=True` (301), carrying URL values over, keeping `?q=` with `query_string=True`, and working out the address in `get_redirect_url()`.
-- **Ch80:** The start of my book review system with class-based views. This folder only has the empty project; the finished app is in the `BookReviewCBV` folder (see below).
+- **Ch80:** The first generic view, `ListView`. With only `model = Student` it already finds the rows and the template (`myapp/student_list.html`). Then I changed it step by step: `template_name`, `template_name_suffix`, `ordering`, `context_object_name`, `get_queryset()` to keep only some rows, `get_context_data()` to send a second list, and `get_template_names()` to pick the template from a cookie (I set it from the browser console with `document.cookie = "user=Umar"`).
+- **Ch81:** `DetailView`: shows one row, and the `pk` comes from the URL (`<int:pk>`). Also `pk_url_kwarg` (when the URL calls it `id`) and `template_name_suffix` (`_info` instead of `_detail`).
+- **Ch82:** `FormView` with a contact form: `form_class`, `template_name`, `success_url`, `initial`, `form_valid()` (where I save the data into a `Contact` model), `form_invalid()` and `get_context_data()`.
+- **Ch83:** `CreateView`: `model` and `fields`, or a `ModelForm` as `form_class` with Bootstrap classes in `widgets`. After saving it goes to `success_url` or to the model's `get_absolute_url()`.
+- **Ch84:** `UpdateView`: the same form template as create, filled with the row found by `pk`. A password box is empty by default, so I used `render_value=True` for it.
+- **Ch85:** `DeleteView`: a GET shows the "are you sure?" page (`student_confirm_delete.html`) and a POST deletes the row. It needs a `success_url`, written with `reverse_lazy`, because the row is gone and there is nothing to go back to.
+- **Ch86:** A CRUD project with all five generic views on one `Student` model (name, email, roll): list, detail, add, edit and delete, with one `student_form.html` shared by add and edit, and a `base.html` with Bootstrap.
+
+### Authentication with class-based views (Ch87)
+
+- **Ch87:** The Ch42 idea again, but with class-based views and less code, in three apps (`accounts`, `customer`, `seller`):
+  - a custom user model built from `AbstractBaseUser`, with my own `BaseUserManager` (`create_user` and `create_superuser`), the `has_perm` and `has_module_perms` methods the admin asks for, and two extra fields, `is_customer` and `is_seller`, set with `AUTH_USER_MODEL`
+  - customer and seller sign up with `CreateView` and a `UserCreationForm`, and each kind of user goes to their own dashboard after login
+  - login with the **email** (`USERNAME_FIELD = 'email'`), and `LogoutView` (logout has to be a POST)
+  - change password with the old password (`PasswordChangeView`) and forgot password by email (`PasswordResetView` and the three pages after it), with an HTML email card
+  - Gmail settings read from a `.env` file with `python-dotenv`; without the file the emails are printed in the terminal instead
+  - I left the login rules (mixins) out for now, so the dashboards are open to anyone who knows the address
 
 ## Small projects
 
 - **Bistro:** a restaurant website with Tailwind CSS.
 - **BookReview:** books and reviews. You have to log in to write a review, and you can filter books by genre. I made it to practise everything up to the forms chapters.
-- **BookReviewCBV:** the same book idea again, rebuilt with class-based views after Ch77–Ch80. It has a book library with:
+- **BookReviewCBV:** the same book idea again, rebuilt with class-based views after Ch77–Ch79. It has a book library with:
   - list, detail, add, edit and delete pages, all class-based views built on `TemplateView` with `get_context_data()` (the delete page asks first, and only a POST really deletes)
   - **filters** on the list: search in the title or author (a `Q` object), genre, minimum rating and sorting. The choices are in the address (`/?genre=technology&min_rating=4`), and unknown values are ignored
   - **cover images**: an `ImageField` with uploads (`MEDIA_ROOT`, `request.FILES`, `enctype="multipart/form-data"`, needs Pillow). Books without a cover show a coloured block with their first letter
@@ -164,11 +183,11 @@ python manage.py runserver
 
 On macOS/Linux, activate with `source venv/bin/activate` instead.
 
-A few chapters have a `requirements.txt`. Later chapters need an extra package; if you get `ModuleNotFoundError`, install the missing one (for example `python-decouple`, `uvicorn`, `daphne`, `httpx`, `whitenoise` or `pillow`).
+A few chapters have a `requirements.txt`. Later chapters need an extra package; if you get `ModuleNotFoundError`, install the missing one (for example `python-decouple`, `python-dotenv`, `uvicorn`, `daphne`, `httpx`, `whitenoise` or `pillow`).
 
 For the async chapters, run the server with Uvicorn instead, for example `uvicorn Ch75.asgi:application --reload`.
 
-The databases aren't in the repo anymore (older commits still have them, but those were only practice data), so every chapter starts empty. Add your own data through admin. The email chapters (Ch42–Ch45) need your own Gmail settings in a `.env` file.
+The databases aren't in the repo anymore (older commits still have them, but those were only practice data), so every chapter starts empty. Add your own data through admin. The email chapters (Ch42–Ch45 and Ch87) need your own Gmail address and App Password in a `.env` file (`GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD`). Without it, Ch87 prints the emails in the terminal.
 
 ## Mistakes I made (so you don't have to)
 
@@ -184,8 +203,13 @@ The databases aren't in the repo anymore (older commits still have them, but tho
 - An `ImageField` needs Pillow installed, and deleting a book row doesn't delete its image file. Remove the file yourself in the delete view, and keep the `media` folder out of Git.
 - Tailwind IntelliSense told me to change `flex-grow-1` to `grow` in a Bootstrap page. Bootstrap doesn't have `grow`, so I left it. Editor hints are for one framework only.
 - In async views, normal ORM calls like `Student.objects.get()` fail. Use `aget()`, `acount()`, `async for`, or `sync_to_async`.
+- `form_class` needs the class, not an object: `form_class = ContactForm`. With brackets I got `'ContactForm' object is not callable`, because Django makes the form itself.
+- A `TemplateView` used straight in `urls.py` still needs `template_name`. I forgot it on my thank-you page and got "TemplateResponseMixin requires either a definition of 'template_name'".
+- When I overrode `get_form()` I forgot `return form` at the end, so the page showed no fields.
+- In Ch87 I typed my email into the login box, but Django's login form asks for the username. To log in with the email, the user model has to use it as its `USERNAME_FIELD` (a small authentication backend also works, but I ended up building the user from `AbstractBaseUser`).
+- Decide the custom user model before the first `migrate`. In Ch87 I changed it twice. The first time the database had no users, so I just started again. The second time it had users, so I tested the migration on a copy of the database first.
 - In the earlier chapters I pushed `db.sqlite3` too. That was fine here because it only had practice data (dummy students and test users), but in a real project the database holds real users, so I stopped and added it to `.gitignore`. Do the same with `.env` files from day one.
 
 ## What I'm learning next
 
-The built-in generic class-based views (`ListView`, `DetailView`, `CreateView`, `UpdateView` and `DeleteView`) to redo BookReviewCBV with even less code, Django REST Framework, testing, and deploying a project.
+Redoing BookReviewCBV with the generic class-based views (`ListView`, `DetailView`, `CreateView`, `UpdateView` and `DeleteView`) to use even less code, adding the login rules (mixins) back to the Ch87 dashboards, Django REST Framework, testing, and deploying a project.

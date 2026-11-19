@@ -1,0 +1,48 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}{{ title }} | Marketplace{% endblock title %}
+
+{# One page for all the password forms (change password, forgot password, new password). #}
+{# title, text and button are sent by each view with extra_context. #}
+{% block content %}
+<div class="card border-0 shadow mx-auto" style="max-width: 450px;">
+    <div class="card-body p-4">
+        <h1 class="h3 fw-bold text-center mb-4">{{ title }}</h1>
+
+        {# validlink is sent only by the "new password" view: False when the link in the email is used twice or is too old #}
+        {% if validlink is False %}
+        <div class="alert alert-danger">This link is not valid any more. It was already used or it is too old.</div>
+        <a href="{% url 'password_reset' %}" class="btn btn-dark w-100">Ask for a new link</a>
+        {% else %}
+
+        {% if text %}
+        <p class="text-muted">{{ text }}</p>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors.0 }}</div>
+            {% endif %}
+
+            {# every field is drawn by hand so Bootstrap can style it, a password is never put back in the box #}
+            {% for field in form %}
+            <div class="mb-3">
+                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+                       {% if field.field.widget.input_type != 'password' %}value="{{ field.value|default_if_none:'' }}"{% endif %}
+                       class="form-control{% if field.errors %} is-invalid{% endif %}" required>
+                {% for error in field.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+                {% endfor %}
+                {% if field.help_text %}
+                <div class="form-text">{{ field.help_text|safe }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-dark w-100">{{ button }}</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
