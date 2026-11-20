@@ -78,7 +78,7 @@ If you're learning Django too, feel free to go through it in the same order. I'v
 - **Ch44:** Role-based registration (sign up as a customer or a seller) with a few extra security checks.
 - **Ch45:** Giving permissions in code. A config file says which role gets which permissions, and they're added when a user registers. Customers can only view products; sellers can add, edit and delete them. Buttons in the templates are hidden with `perms` too.
 
-Ch42–Ch45 are all function-based views. I did the same idea again with class-based views in Ch87 and Ch88 (see below).
+Ch42–Ch45 are all function-based views. I did the same idea again with class-based views in Ch87–Ch90 (see below).
 
 ### Cookies, sessions, caching (Ch46–Ch52)
 
@@ -144,7 +144,7 @@ All of these use the same 10 students, so you can compare results.
 - **Ch85:** `DeleteView`: a GET shows the "are you sure?" page (`student_confirm_delete.html`) and a POST deletes the row. It needs a `success_url`, written with `reverse_lazy`, because the row is gone and there is nothing to go back to.
 - **Ch86:** A CRUD project with all five generic views on one `Student` model (name, email, roll): list, detail, add, edit and delete, with one `student_form.html` shared by add and edit, and a `base.html` with Bootstrap.
 
-### Authentication with class-based views (Ch87–Ch88)
+### Authentication with class-based views (Ch87–Ch90)
 
 - **Ch87:** The Ch42 idea again, but with class-based views and less code, in three apps (`accounts`, `customer`, `seller`):
   - a custom user model built from `AbstractBaseUser`, with my own `BaseUserManager` (`create_user` and `create_superuser`), the `has_perm` and `has_module_perms` methods the admin asks for, and two extra fields, `is_customer` and `is_seller`, set with `AUTH_USER_MODEL`
@@ -157,6 +157,38 @@ All of these use the same 10 students, so you can compare results.
   - `CustomerRequiredMixin` and `SellerRequiredMixin` in `accounts/mixins.py`. Each one combines `LoginRequiredMixin` with `UserPassesTestMixin`, whose `test_func()` checks `is_customer` or `is_seller`
   - the mixin is written before the view (`class CustomerDashboardView(CustomerRequiredMixin, TemplateView)`), so the login is checked first and the role second
   - a visitor who isn't logged in is sent to the login page; a logged in user with the wrong role gets a 403 page (my own `403.html`) with a button back to their own dashboard
+- **Ch89:** Ch88 again, but now the two roles have something to do: products. Sellers get their own pages to add, edit and delete products, and they only ever see their own. If a seller types the address of somebody else's product, they get a 404. Customers get a small shop window where they can browse all the products and open one.
+  - the rules come from permissions I give in code: customers can only view products, sellers can view, add, change and delete. The views check them with `PermissionRequiredMixin` and `permission_required`
+  - my user model doesn't use `PermissionsMixin`, so I wrote `has_perm()` and `has_perms()` myself
+  - the navbar uses `perms` in the template to hide links that a person isn't allowed to use
+- **Ch90:** The same role rules as Ch88 (no products this time), but written as decorators instead of mixins. I wrote `customer_required`, `seller_required` and `anonymous_required` in `accounts/decorators.py`.
+  - a decorator made for a function can't go straight on a method of a class, so I used `method_decorator`. On the class I put it on `dispatch`, because every request goes through `dispatch()` first, so one line covers `get()` and `post()` together
+  - I tried stacking two decorators, giving them as a list, and putting `never_cache` on just one method (the home page `get()`), so the back button doesn't show a logged in page after logout
+  - the sign up pages use `anonymous_required`: if you're already logged in, you're sent home instead of seeing the form
+
+### Built-in authentication (Ch91–Ch92)
+
+Django already comes with the views for login, logout and passwords, so in these two chapters I just used them. There's no custom user model, only the normal `User`.
+
+- **Ch91:** I added `django.contrib.auth.urls` to the project's `urls.py`, and that gave me login, logout and the password pages. I made an app called `registration` for my own templates, because the built-in views look for them in a folder called `registration/`. I wrote the login, profile and change password templates. The profile page is where Django sends you after login by default (`/accounts/profile/`). It has a logout button, and that has to be a small POST form, because logout doesn't work with a normal link.
+- **Ch92:** The same idea, but this time I wrote the views in my own `urls.py` and gave each one a `template_name`, so my templates can have any name I like (`myapp/login.html`, `password_change.html` and so on).
+  - `LoginView`, `LogoutView`, `PasswordChangeView` and `PasswordChangeDoneView` with `.as_view(template_name=...)`
+  - a dashboard that needs a login (a `TemplateView` wrapped in `login_required`) with the user's details, a "Change password" button and a logout button
+  - `LOGIN_URL`, `LOGIN_REDIRECT_URL` and `LOGOUT_REDIRECT_URL` in `settings.py`: where a visitor is sent to log in, where you land after logging in, and where you land after logging out
+  - I also made a `logout.html` page, but it only shows when `LOGOUT_REDIRECT_URL` isn't set. While it is set, logout goes straight to the login page.
+
+### Async class-based views (Ch93)
+
+- **Ch93:** The Ch71 idea again, but with class-based views and run with Uvicorn (`uvicorn Ch93.asgi:application --reload`). Both views call a free API 5 times. `SyncView` uses `requests` and asks one call after another, so it took about 5.4 seconds. `AsyncView` uses `httpx` and `asyncio.gather` to ask all 5 together, so it took about 1.2 seconds. One rule to remember: all the methods in one view class must be the same kind, either all `def` or all `async def`.
+
+### Login required middleware (Ch94)
+
+- **Ch94:** A middleware that makes every page need a login, so none of the views needs `@login_required` or `LoginRequiredMixin`. I wrote it as a class in `myapp/middleware.py`.
+  - the important part is the `process_view()` method. Django calls it after it has found which view will answer, so the middleware can look at that view before it runs
+  - it asks two questions: is this view marked as open, and is the user logged in? If the answer to both is no, the visitor is sent to the login page with `?next=`, so they come back to the page they wanted after logging in
+  - I mark the open pages with `@login_not_required` (on a class it goes on `dispatch` with `method_decorator`, like in Ch90). Django's own login view already has it, so the login page doesn't lock itself out
+  - the middleware has to be listed below `AuthenticationMiddleware` in `MIDDLEWARE`, because it needs `request.user`
+  - Django also has a ready-made `LoginRequiredMiddleware` that works the same way, with the same decorator
 
 ## Small projects
 
@@ -187,11 +219,11 @@ python manage.py runserver
 
 On macOS/Linux, activate with `source venv/bin/activate` instead.
 
-A few chapters have a `requirements.txt`. Later chapters need an extra package; if you get `ModuleNotFoundError`, install the missing one (for example `python-decouple`, `python-dotenv`, `uvicorn`, `daphne`, `httpx`, `whitenoise` or `pillow`).
+A few chapters have a `requirements.txt`. Later chapters need an extra package; if you get `ModuleNotFoundError`, install the missing one (for example `python-decouple`, `python-dotenv`, `uvicorn`, `daphne`, `httpx`, `requests`, `whitenoise` or `pillow`).
 
 For the async chapters, run the server with Uvicorn instead, for example `uvicorn Ch75.asgi:application --reload`.
 
-The databases aren't in the repo anymore (older commits still have them, but those were only practice data), so every chapter starts empty. Add your own data through admin. The email chapters (Ch42–Ch45, Ch87 and Ch88) need your own Gmail address and App Password in a `.env` file (`GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD`). Without it, Ch87 and Ch88 print the emails in the terminal.
+The databases aren't in the repo anymore (older commits still have them, but those were only practice data), so every chapter starts empty. Add your own data through admin. The email chapters (Ch42–Ch45 and Ch87–Ch90) need your own Gmail address and App Password in a `.env` file (`GMAIL_ADDRESS` and `GMAIL_APP_PASSWORD`). Without it, Ch87–Ch90 print the emails in the terminal.
 
 ## Mistakes I made (so you don't have to)
 
@@ -212,6 +244,10 @@ The databases aren't in the repo anymore (older commits still have them, but tho
 - When I overrode `get_form()` I forgot `return form` at the end, so the page showed no fields.
 - In Ch87 I typed my email into the login box, but Django's login form asks for the username. To log in with the email, the user model has to use it as its `USERNAME_FIELD` (a small authentication backend also works, but I ended up building the user from `AbstractBaseUser`).
 - Decide the custom user model before the first `migrate`. In Ch87 I changed it twice. The first time the database had no users, so I just started again. The second time it had users, so I tested the migration on a copy of the database first.
+- A decorator I wrote for a function view can't go straight on a method of a class, because the method receives `self` first. Use `@method_decorator(my_decorator, name='dispatch')` on the class (Ch90). Putting it on `dispatch` covers `get()` and `post()` together.
+- Django's admin has its own templates in a `registration/` folder too, for example `password_change_form.html`. If my app has a file with the same name, whichever app is listed first in `INSTALLED_APPS` wins, so my `registration` app had to go above `django.contrib.admin` (Ch91). Giving my templates their own folder name, like `myapp/`, avoids the problem (Ch92).
+- Async doesn't speed up separate requests. Under Uvicorn, Django already gives every sync request its own thread, so three sync requests at once took the same time as three async ones. Async helps inside one view that has to wait for many things, like the 5 API calls in Ch93.
+- If a middleware uses `request.user`, it has to be listed below `AuthenticationMiddleware`. Above it, `request.user` doesn't exist yet and the pages crash (Ch94).
 - In the earlier chapters I pushed `db.sqlite3` too. That was fine here because it only had practice data (dummy students and test users), but in a real project the database holds real users, so I stopped and added it to `.gitignore`. Do the same with `.env` files from day one.
 
 ## What I'm learning next
