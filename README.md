@@ -190,6 +190,14 @@ Django already comes with the views for login, logout and passwords, so in these
   - the middleware has to be listed below `AuthenticationMiddleware` in `MIDDLEWARE`, because it needs `request.user`
   - Django also has a ready-made `LoginRequiredMiddleware` that works the same way, with the same decorator
 
+### URL namespaces (Ch95)
+
+- **Ch95:** Three apps in one project (`core`, `customer`, `seller`) to see why URL namespaces exist. `customer` and `seller` both have a page called `dashboard`, and if the names were plain, `{% url 'dashboard' %}` couldn't tell which one I mean (it quietly picks the last one in the list).
+  - the fix is one line in each app's `urls.py`: `app_name = 'customer'` and `app_name = 'seller'`. That is the namespace of the app
+  - after that I write `{% url 'customer:dashboard' %}` and `{% url 'seller:dashboard' %}`: the namespace, a colon, then the name. A plain `reverse('dashboard')` now fails with `NoReverseMatch`
+  - `core` has no `app_name`, so its home page is still just `{% url 'home' %}`
+  - the home page links to both dashboards and to the customer profile, and each page prints `request.resolver_match.namespace` and `.view_name`, so it shows which namespace answered
+
 ## Small projects
 
 - **Bistro:** a restaurant website with Tailwind CSS.
@@ -248,6 +256,7 @@ The databases aren't in the repo anymore (older commits still have them, but tho
 - Django's admin has its own templates in a `registration/` folder too, for example `password_change_form.html`. If my app has a file with the same name, whichever app is listed first in `INSTALLED_APPS` wins, so my `registration` app had to go above `django.contrib.admin` (Ch91). Giving my templates their own folder name, like `myapp/`, avoids the problem (Ch92).
 - Async doesn't speed up separate requests. Under Uvicorn, Django already gives every sync request its own thread, so three sync requests at once took the same time as three async ones. Async helps inside one view that has to wait for many things, like the 5 API calls in Ch93.
 - If a middleware uses `request.user`, it has to be listed below `AuthenticationMiddleware`. Above it, `request.user` doesn't exist yet and the pages crash (Ch94).
+- Two apps with the same url name (like `dashboard`) is not an error, and that's the problem: `{% url 'dashboard' %}` quietly gives you the last one in `urlpatterns` (the seller page), so a customer link would open the seller's page. Add `app_name` to each app's `urls.py` and use `{% url 'customer:dashboard' %}` (Ch95).
 - In the earlier chapters I pushed `db.sqlite3` too. That was fine here because it only had practice data (dummy students and test users), but in a real project the database holds real users, so I stopped and added it to `.gitignore`. Do the same with `.env` files from day one.
 
 ## What I'm learning next
