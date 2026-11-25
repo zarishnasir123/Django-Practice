@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Products{% endblock title %}</title>
+    {# Bootstrap CSS from a CDN (a link to the files on the internet, nothing to download) #}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand" href="/">Product CRUD</a>
+    </div>
+</nav>
+
+<div class="container py-5">
+    {# every page puts its own content here #}
+    {% block content %}{% endblock content %}
+</div>
+
+{# Bootstrap JavaScript (needed for things like modals and dropdowns) #}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{# a page can add its own JavaScript here, the AJAX code will go in this block #}
+{% block script %}{% endblock script %}
+</body>
+</html>

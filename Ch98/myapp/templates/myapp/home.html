@@ -1,0 +1,83 @@
+{% extends 'myapp/base.html' %}
+{% load static %}
+
+{% block title %}Products{% endblock title %}
+
+{% block content %}
+<h1 class="h3 fw-bold mb-4">Products</h1>
+
+<div class="card border-0 shadow-sm mb-4" style="max-width: 450px;">
+    <div class="card-body">
+        {# the form comes from the view (ProductForm) #}
+        <form id="product-form">
+            {% csrf_token %}
+            {# the empty divs with an id are for the error messages, JavaScript writes into them #}
+            <div class="mb-3">
+                <label for="{{ form.name.id_for_label }}" class="form-label">Name</label>
+                {{ form.name }}
+                <div id="name-error" class="text-danger small"></div>
+            </div>
+            <div class="mb-3">
+                <label for="{{ form.price.id_for_label }}" class="form-label">Price</label>
+                {{ form.price }}
+                <div id="price-error" class="text-danger small"></div>
+            </div>
+            <button type="submit" id="save-btn" class="btn btn-primary">Save</button>
+            {# d-none hides the button, it is shown only while a product is being edited #}
+            <button type="button" id="cancel-btn" class="btn btn-secondary d-none">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 fw-bold mb-3">Product list</h2>
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            {# the rows will be added into this tbody by JavaScript, after the products come from the server (AJAX) #}
+            <tbody id="product-table-body">
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No products to show yet</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{# The popup (Bootstrap modal) of the View button. It is hidden until JavaScript shows it, and JavaScript fills the empty dd tags. #}
+<div class="modal fade" id="view-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Product details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <dl class="row mb-0">
+                    <dt class="col-4">ID</dt>
+                    <dd class="col-8" id="view-id"></dd>
+                    <dt class="col-4">Name</dt>
+                    <dd class="col-8" id="view-name"></dd>
+                    <dt class="col-4">Price</dt>
+                    <dd class="col-8 mb-0" id="view-price"></dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{# goes into the script block of base.html, after the Bootstrap JavaScript #}
+{% block script %}
+<script src="{% static 'myapp/js/script.js' %}"></script>
+{% endblock script %}
