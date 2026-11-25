@@ -198,6 +198,44 @@ Django already comes with the views for login, logout and passwords, so in these
   - `core` has no `app_name`, so its home page is still just `{% url 'home' %}`
   - the home page links to both dashboards and to the customer profile, and each page prints `request.resolver_match.namespace` and `.view_name`, so it shows which namespace answered
 
+### reverse and reverse_lazy (Ch96)
+
+- **Ch96:** In templates I already use `{% url 'name' %}` to get an address from its name. `reverse()` does the same thing inside Python code, so a view doesn't need the address typed in.
+  - in the function views, `reverse('home')` gives `/home/`, and `reverse('product', kwargs={'pk': pk})` gives `/product/5/` (the values for the address go in `kwargs`)
+  - the class-based views use `reverse_lazy()`. It gives the same result, but it waits until the address is really needed. That matters when it is written at the top of a class (like `success_url = reverse_lazy('home')`), because the URLs are not loaded yet when Python reads the class
+  - the names used are the `name=` values in `urls.py`, so if I change an address there, nothing else breaks
+
+### JSON responses (Ch97)
+
+- **Ch97:** Sending JSON instead of HTML with `JsonResponse`, with a `Product` model (name and price) and 8 dummy products.
+  - a dictionary becomes JSON by itself, and `Content-Type: application/json` is set for me
+  - a QuerySet can't be sent, so I use `list(Product.objects.values(...))`. A list (not a dictionary) needs `safe=False`, or Django raises `TypeError`
+  - a missing product gives `{"error": "Product not found"}` with `status=404`. I used `filter(pk=pk).first()` and an `if`, so there is no `try`/`except`
+  - `status=201`, my own header (`response['X-Student-Note'] = ...`) and `json_dumps_params={'indent': 4}` for readable output
+  - a `Decimal` price is sent as text (`"899.99"`, with quotes)
+  - the same list and detail pages as function views and as class-based views
+
+### CRUD API with AJAX (Ch98)
+
+- **Ch98:** A product page that creates, reads, updates and deletes products without reloading, by talking to a JSON API with `fetch`. I used the `Product` model again, and the page is one `home` view with `base.html` (Bootstrap), `home.html` and `static/myapp/js/script.js`.
+  - the API has two views: `ProductAPI` (`get` for the list, `post` to create) and `ProductDetailAPI` (`get`, `put` and `delete` for one product, with the `pk` in the address)
+  - the data arrives as JSON text in `request.body`, so I use `json.loads()` and give it to a `ModelForm`. That is the same validation as a normal form: name at least 3 characters and not used by another product, price above 0. A wrong form answers with the errors and `status=400`, and the page writes them under the inputs
+  - for an update the form gets `instance=product`, so it changes the row instead of making a new one (and the product's own name doesn't count as a duplicate)
+  - in JavaScript: `fetch` with `async` / `await`, `response.ok`, `response.json()`, `JSON.stringify()` and `method: 'POST'`, `'PUT'` or `'DELETE'`
+  - the csrf token is read from the hidden input and sent in the `X-CSRFToken` header. Without it Django answers 403
+  - the table is filled by JavaScript, with buttons for View (a Bootstrap popup), Edit (fills the form, and the button says "Update") and Delete (asks first). One click listener on the table body handles all of them, because the buttons are made again each time
+  - names are written with `escapeHtml()`, so a name like `<b>hi</b>` shows as text
+
+### annotate with related_name (Ch99)
+
+- **Ch99:** `annotate()` across a ForeignKey, with an `Author` and a `Book` (title, author, price, discount) and dummy data: 5 authors and 10 books, one author with no books on purpose. In `Book` the key has `related_name='books'`, and that name is how an `Author` query reaches the books.
+  - `Author.objects.annotate(book_count=Count('books'))`, ordered with `order_by('-book_count')`, and filtered on the new name (`filter(book_count__gt=1)`, `filter(book_count=0)`)
+  - several at once: `Sum`, `Avg`, `Min` and `Max` of `'books__price'` (two underscores to reach a field of the books)
+  - `Count('books', filter=Q(books__discount__gt=0))` counts only the books that match
+  - `filter(books__price__gt=12).distinct()` finds authors by their books, and `distinct()` stops an author from showing up once for every matching book
+  - the other direction, `author.books.all()`, with `prefetch_related('books')` so the loop doesn't ask the database again for every author
+  - an author without books gets `0` from `Count` but `None` from `Sum` and `Avg`
+
 ## Small projects
 
 - **Bistro:** a restaurant website with Tailwind CSS.
@@ -257,6 +295,10 @@ The databases aren't in the repo anymore (older commits still have them, but tho
 - Async doesn't speed up separate requests. Under Uvicorn, Django already gives every sync request its own thread, so three sync requests at once took the same time as three async ones. Async helps inside one view that has to wait for many things, like the 5 API calls in Ch93.
 - If a middleware uses `request.user`, it has to be listed below `AuthenticationMiddleware`. Above it, `request.user` doesn't exist yet and the pages crash (Ch94).
 - Two apps with the same url name (like `dashboard`) is not an error, and that's the problem: `{% url 'dashboard' %}` quietly gives you the last one in `urlpatterns` (the seller page), so a customer link would open the seller's page. Add `app_name` to each app's `urls.py` and use `{% url 'customer:dashboard' %}` (Ch95).
+- In a view I wrote `def get(self, request, **args, **kwargs)` and Pylance said "Only one `**` parameter allowed". It's `*args, **kwargs`: one star collects the extra values in a tuple, two stars collect the named ones in a dictionary (Ch96).
+- `JsonResponse([...])` with a list raises `TypeError` unless you add `safe=False`. Wrapping the list in a dictionary (`{'products': [...]}`) also works (Ch97).
+- Keep the trailing slash the same in `urls.py` and in JavaScript. My path was `api/products/` but the script used `/api/products`, so Django had to redirect every request, and a POST can't be redirected. Also, `fetch` with POST, PUT or DELETE needs the csrf token in the `X-CSRFToken` header (Ch98).
+- A sum of decimals in SQLite can show extra digits (`43.9900000000000`). Format money with `:.2f` when showing it (Ch99).
 - In the earlier chapters I pushed `db.sqlite3` too. That was fine here because it only had practice data (dummy students and test users), but in a real project the database holds real users, so I stopped and added it to `.gitignore`. Do the same with `.env` files from day one.
 
 ## What I'm learning next
