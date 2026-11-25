@@ -236,6 +236,16 @@ Django already comes with the views for login, logout and passwords, so in these
   - the other direction, `author.books.all()`, with `prefetch_related('books')` so the loop doesn't ask the database again for every author
   - an author without books gets `0` from `Count` but `None` from `Sum` and `Avg`
 
+### select_related and prefetch_related (Ch100)
+
+- **Ch100:** Making a page ask the database fewer times. The models are `Author`, `Book` (a ForeignKey to the author, `related_name='books'`) and `Tag`, joined to books with a many-to-many field (`book.tags.all()` and `tag.books.all()`). The dummy data is 6 Urdu authors (spelled in Roman Urdu) with 17 books, and 10 tags with 42 links between books and tags. The home page is a table of every book with its author, its tags and its price.
+  - the problem: the template writes `book.author.name` inside a loop, so Django goes back to the database for the author of every book. 17 books made 18 queries (1 for the books and 17 for the authors). This is called the N+1 problem
+  - to see it, I wrote a `show_queries()` helper that prints the number of queries and the SQL of each one, from `connection.queries`. That list is only filled while `DEBUG = True`. `reset_queries()` empties it at the start of the view, and `show_queries()` is called after `render()`, because the template makes queries while it builds the page
+  - `select_related('author')` fixes the author part. It joins the author table in the same query (`INNER JOIN`), so every book already carries its author. 18 queries became 1. It works for a ForeignKey or a OneToOne
+  - then I added a Tags column. `select_related` can't follow a many-to-many, so the page went back to 18 queries (1 for the books joined with their authors, then one tags query for each book)
+  - `prefetch_related('tags')` fixes that. It makes one extra query for the tags of all the books at once and matches them to the books in Python, so the page needs 2 queries. It works for many-to-many and for the reverse side of a ForeignKey (`Author.objects.prefetch_related('books')`)
+  - so the final line is `Book.objects.select_related('author').prefetch_related('tags')`: a JOIN for the author, one extra query for the tags
+
 ## Small projects
 
 - **Bistro:** a restaurant website with Tailwind CSS.
@@ -299,6 +309,8 @@ The databases aren't in the repo anymore (older commits still have them, but tho
 - `JsonResponse([...])` with a list raises `TypeError` unless you add `safe=False`. Wrapping the list in a dictionary (`{'products': [...]}`) also works (Ch97).
 - Keep the trailing slash the same in `urls.py` and in JavaScript. My path was `api/products/` but the script used `/api/products`, so Django had to redirect every request, and a POST can't be redirected. Also, `fetch` with POST, PUT or DELETE needs the csrf token in the `X-CSRFToken` header (Ch98).
 - A sum of decimals in SQLite can show extra digits (`43.9900000000000`). Format money with `:.2f` when showing it (Ch99).
+- Nothing after a `return` runs. In Ch100 I wrote `return render(...)` above the `books = ...` lines, so the query never ran and the table was empty. `render()` also needs the `request` first, then the template, then the data for it: `render(request, 'myapp/home.html', {'books': books})`.
+- `connection.queries` (used to count queries in Ch100) stays empty when `DEBUG = False`, so it only works while developing.
 - In the earlier chapters I pushed `db.sqlite3` too. That was fine here because it only had practice data (dummy students and test users), but in a real project the database holds real users, so I stopped and added it to `.gitignore`. Do the same with `.env` files from day one.
 
 ## What I'm learning next

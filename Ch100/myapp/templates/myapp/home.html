@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h1 class="h3 fw-bold mb-4">Books</h1>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Tags</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in books %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ book.title }}</td>
+                        {# book.author is a ForeignKey: the author is read from the database when it is used here #}
+                        <td>{{ book.author.name }}</td>
+                        {# book.tags is a many to many field: .all gives the tags of this book, one badge for each tag #}
+                        <td>
+                            {% for tag in book.tags.all %}
+                            <span class="badge bg-secondary">{{ tag.name }}</span>
+                            {% empty %}
+                            <span class="text-muted">-</span>
+                            {% endfor %}
+                        </td>
+                        <td>{{ book.price }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">No books yet</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
