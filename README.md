@@ -246,6 +246,16 @@ Django already comes with the views for login, logout and passwords, so in these
   - `prefetch_related('tags')` fixes that. It makes one extra query for the tags of all the books at once and matches them to the books in Python, so the page needs 2 queries. It works for many-to-many and for the reverse side of a ForeignKey (`Author.objects.prefetch_related('books')`)
   - so the final line is `Book.objects.select_related('author').prefetch_related('tags')`: a JOIN for the author, one extra query for the tags
 
+### Pagination (Ch101–Ch102)
+
+Showing a long list a few rows at a time, with a `blog` app, a `Post` model (title, desc, publish date) and 45 dummy posts. Both chapters have First, Previous, page number, Next and Last buttons made with Bootstrap, and the posts are ordered newest first, because pagination needs a fixed order.
+
+- **Ch101:** pagination with a function view. `Paginator(posts, 5)` cuts the posts into pages, `request.GET.get('page')` reads `?page=2` from the address, and `get_page()` gives the posts of that page. In the template I loop over `page_obj` and use `has_previous`, `next_page_number`, `paginator.page_range` and so on. `get_page()` never crashes: a word like `abc` shows page 1, and a number that doesn't exist (999 or 0) shows the last page.
+- **Ch102:** the same page with class-based views, done two ways.
+  - `ListView` with `paginate_by = 7` does everything by itself and sends `page_obj`, `paginator` and `is_paginated` to the template. A wrong page number gives a 404 here, and `?page=last` opens the last page
+  - `paginate_orphans = 3` stops a tiny last page. 45 posts in pages of 7 leaves 3 over, so they join page 6 (6 pages, the last with 10 posts, instead of 7 pages with the last having 3). With `Paginator` it's the `orphans=` argument
+  - then the same thing at `/paginator/` without `ListView`: a plain `View` class where I use `Paginator` myself in `get()` and send the same variable names, so both pages share one template
+
 ## Small projects
 
 - **Bistro:** a restaurant website with Tailwind CSS.
@@ -311,6 +321,7 @@ The databases aren't in the repo anymore (older commits still have them, but tho
 - A sum of decimals in SQLite can show extra digits (`43.9900000000000`). Format money with `:.2f` when showing it (Ch99).
 - Nothing after a `return` runs. In Ch100 I wrote `return render(...)` above the `books = ...` lines, so the query never ran and the table was empty. `render()` also needs the `request` first, then the template, then the data for it: `render(request, 'myapp/home.html', {'books': books})`.
 - `connection.queries` (used to count queries in Ch100) stays empty when `DEBUG = False`, so it only works while developing.
+- `ListView` and `get_page()` treat a wrong page number differently. `?page=999` is a 404 in a `ListView` but shows the last page with `get_page()` (Ch101–Ch102). Also, `orphans` has to be smaller than the page size.
 - In the earlier chapters I pushed `db.sqlite3` too. That was fine here because it only had practice data (dummy students and test users), but in a real project the database holds real users, so I stopped and added it to `.gitignore`. Do the same with `.env` files from day one.
 
 ## What I'm learning next
