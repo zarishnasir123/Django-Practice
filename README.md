@@ -256,6 +256,16 @@ Showing a long list a few rows at a time, with a `blog` app, a `Post` model (tit
   - `paginate_orphans = 3` stops a tiny last page. 45 posts in pages of 7 leaves 3 over, so they join page 6 (6 pages, the last with 10 posts, instead of 7 pages with the last having 3). With `Paginator` it's the `orphans=` argument
   - then the same thing at `/paginator/` without `ListView`: a plain `View` class where I use `Paginator` myself in `get()` and send the same variable names, so both pages share one template
 
+### Logging (Ch103)
+
+- **Ch103:** Keeping a record of what the app does with Python's `logging` module, in the terminal and in a file, instead of using `print()`.
+  - in the view file, `logger = logging.getLogger(__name__)` makes a logger named `myapp.views`. The home page logs one message at each level: `debug`, `info`, `warning`, `error` and `critical`, from the least serious to the most serious
+  - the `LOGGING` setting in `settings.py` has three parts. **Formatters** decide how a line looks. **Handlers** decide where it goes (`console` for the terminal and `file` for a log file). **Loggers** connect a name (`myapp`) to its handlers
+  - each handler has its own level. The terminal shows everything from `debug` up, but the file keeps only `warning` and above, so the file stays small
+  - `propagate: False` stops the same line being printed twice
+  - a format can be written in three styles: `{asctime}` with `'style': '{'`, `%(asctime)s` with `'style': '%'` (the percent way, which is Python's default) and `$asctime` with `'style': '$'`. I left all of them in the settings as comments, and also the long version with `levelname`, `name`, `lineno`, `asctime`, `pathname`, `module`, `funcName`, `filename` and `message`
+  - the log files live in a `logs` folder. `settings.py` creates it with `mkdir(exist_ok=True)`, and `*.log` is in `.gitignore`
+
 ## Small projects
 
 - **Bistro:** a restaurant website with Tailwind CSS.
@@ -322,6 +332,9 @@ The databases aren't in the repo anymore (older commits still have them, but tho
 - Nothing after a `return` runs. In Ch100 I wrote `return render(...)` above the `books = ...` lines, so the query never ran and the table was empty. `render()` also needs the `request` first, then the template, then the data for it: `render(request, 'myapp/home.html', {'books': books})`.
 - `connection.queries` (used to count queries in Ch100) stays empty when `DEBUG = False`, so it only works while developing.
 - `ListView` and `get_page()` treat a wrong page number differently. `?page=999` is a 404 in a `ListView` but shows the last page with `get_page()` (Ch101–Ch102). Also, `orphans` has to be smaller than the page size.
+- I left a value empty in `settings.py` (`'format' : ,`) and Pylance showed four errors, three of them saying `"{" was not closed`. The braces were fine. One missing value confused the rest, so fix the first strange line before counting brackets (Ch103).
+- The `'style'` of a log format has to match how the format is written: `{asctime}` needs `'{'` and `%(asctime)s` needs `'%'`.
+- Logging can't create folders. If the log file is in a folder that doesn't exist, the project won't start, so create it in `settings.py` (Ch103).
 - In the earlier chapters I pushed `db.sqlite3` too. That was fine here because it only had practice data (dummy students and test users), but in a real project the database holds real users, so I stopped and added it to `.gitignore`. Do the same with `.env` files from day one.
 
 ## What I'm learning next
